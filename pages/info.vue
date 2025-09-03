@@ -1,78 +1,124 @@
-<template>
-    <div class="brand-info">
-        <h1>สินค้าเสื้อผ้าแบรนด์</h1>
-        <div class="products">
-            <div class="product" v-for="item in products" :key="item.id">
-                <img :src="item.image" :alt="item.name" class="product-image" />
-                <h2 class="product-name">{{ item.name }}</h2>
-                <p class="product-desc">{{ item.description }}</p>
-                <p class="product-price">ราคา: {{ item.price }} บาท</p>
-            </div>
-        </div>
-    </div>
-</template>
-
 <script setup>
-const products = [
-    {
-        id: 1,
-        name: 'เสื้อยืดแบรนด์ A',
-        description: 'เสื้อยืดคุณภาพดี สวมใส่สบาย',
-        price: 590,
-        image: 'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-        id: 2,
-        name: 'กางเกงยีนส์แบรนด์ B',
-        description: 'กางเกงยีนส์ดีไซน์ทันสมัย',
-        price: 1290,
-        image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=80'
-    },
-    {
-        id: 3,
-        name: 'เสื้อเชิ้ตแบรนด์ C',
-        description: 'เสื้อเชิ้ตเนื้อผ้าดี เหมาะกับทุกโอกาส',
-        price: 990,
-        image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80'
+import { ref, onMounted } from 'vue';
+
+// สร้างตัวแปรแบบ reactive เพื่อเก็บข้อมูลสินค้า
+const products = ref([]);
+const isLoading = ref(true); // ตัวแปรสำหรับสถานะ Loading
+const error = ref(null); // ตัวแปรสำหรับเก็บ Error
+
+// onMounted คือฟังก์ชันที่จะทำงานอัตโนมัติเมื่อ Component ถูกสร้างขึ้น
+onMounted(async () => {
+  try {
+    // URL ของไฟล์ PHP ที่เราสร้างไว้ (ต้องใส่ path ให้ถูกต้อง)
+    const apiUrl = 'http://localhost:8080/ProjectReal/db/shirt_select.php'; // **<-- แก้ไข path ตรงนี้ให้ตรงกับโปรเจกต์ของคุณ**
+
+    const response = await fetch(apiUrl);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
     }
-]
+
+    // แปลงข้อมูล JSON ที่ได้จาก PHP มาเก็บในตัวแปร products
+    products.value = await response.json();
+
+  } catch (e) {
+    // หากเกิดข้อผิดพลาดในการดึงข้อมูล
+    error.value = 'ไม่สามารถดึงข้อมูลได้: ' + e.message;
+    console.error("Fetch error:", e);
+  } finally {
+    // ไม่ว่าจะสำเร็จหรือล้มเหลว ให้ปิดสถานะ Loading
+    isLoading.value = false;
+  }
+});
 </script>
 
+<template>
+  <div class="product-container">
+    <h1>รายการสินค้าทั้งหมด</h1>
+
+    <div v-if="isLoading" class="loading">
+      <p>กำลังโหลดข้อมูลสินค้า...</p>
+    </div>
+
+    <div v-else-if="error" class="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <table v-else-if="products.length > 0" class="product-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>รูปภาพ</th>
+          <th>ชื่อสินค้า</th>
+          <th>หมวดหมู่</th>
+          <th>ราคา (บาท)</th>
+          <th>สต็อก</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="product in products" :key="product.product_id">
+          <td>{{ product.product_id }}</td>
+          <td>
+            <img :src="'http://localhost:8080/ProjectReal/images/' + product.image" :alt="product.product_name" class="product-image">
+          </td>
+          <td>{{ product.product_name }}</td>
+          <td>{{ product.category_name }}</td>
+          <td>{{ parseFloat(product.price).toFixed(2) }}</td>
+          <td>{{ product.stock }}</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div v-else class="no-data">
+      <p>ไม่พบข้อมูลสินค้าในฐานข้อมูล</p>
+    </div>
+
+  </div>
+</template>
+
 <style scoped>
-.brand-info {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
+.product-container {
+  font-family: Arial, sans-serif;
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1rem;
 }
-.products {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
+
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.product {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-    padding: 1rem;
-    width: 240px;
-    text-align: center;
+
+.product-table th, .product-table td {
+  border: 1px solid #00000073;
+  padding: 12px;
+  text-align: left;
 }
+
+.product-table th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.product-table tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
 .product-image {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 6px;
+  max-width: 60px;
+  border-radius: 4px;
 }
-.product-name {
-    margin: 1rem 0 0.5rem;
-    font-size: 1.2rem;
+
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: #666;
 }
-.product-desc {
-    color: #555;
-    margin-bottom: 0.5rem;
-}
-.product-price {
-    color: #1976d2;
-    font-weight: bold;
+
+.error {
+  color: red;
 }
 </style>
