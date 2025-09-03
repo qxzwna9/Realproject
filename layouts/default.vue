@@ -16,6 +16,7 @@
       <v-btn text to="/info">ข้อมูล</v-btn>
       <v-btn text to="/contact">ติดต่อ</v-btn>
       <v-btn text to="/register">สมัครสมาชิก</v-btn>
+      <v-btn text to="/shirt">สินค้า</v-btn>
     </v-app-bar>
     <v-content>
       <v-container

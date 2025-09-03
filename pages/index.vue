@@ -2,7 +2,7 @@
   <div class="welcome-bg-new">
     <div class="welcome-title-inside">
       ELVURE SHOP
-      <div class="welcome-subtitle-inside">
+      <div class="we  1lcome-subtitle-inside">
         ตัวอย่างสินค้าที่ออกแบบโดยทีมงานของเรา
       </div>
     </div>
