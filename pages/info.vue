@@ -92,18 +92,18 @@ onMounted(async () => {
 }
 
 .product-table th, .product-table td {
-  border: 1px solid #00000073;
+  border: 1px solid #64626273;
   padding: 12px;
   text-align: left;
 }
 
 .product-table th {
-  background-color: #f2f2f2;
+  background-color: #3b3b3b;
   font-weight: bold;
 }
 
 .product-table tbody tr:hover {
-  background-color: #f5f5f5;
+  background-color: #4e4e4e;
 }
 
 .product-image {
