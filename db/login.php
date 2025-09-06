@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'connectdb.php'; // <-- แก้ไขเป็น connectdb.php
+require_once 'connectdb.php';
 
 $response = ['status' => 'error', 'message' => 'อีเมลหรือรหัสผ่านไม่ถูกต้อง'];
 $data = json_decode(file_get_contents("php://input"));
@@ -22,6 +22,7 @@ if (isset($data->email) && isset($data->password)) {
             $response['status'] = 'success';
             $response['message'] = 'เข้าสู่ระบบสำเร็จ!';
             $response['user'] = [
+                'id' => $user['user_id'],
                 'name' => $user['name'],
                 'user_type' => $user['user_type']
             ];

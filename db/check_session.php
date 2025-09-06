@@ -1,20 +1,20 @@
 <?php
+// db/check_session.php
 session_start();
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Credentials: true");
+require_once 'connectdb.php';
 
-$response = ['loggedin' => false];
+$response = ['loggedin' => false, 'user' => null];
 
-if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-    $response = [
-        'loggedin' => true,
-        'user' => [
-            'name' => $_SESSION['name'],
-            'user_type' => $_SESSION['user_type']
-        ]
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true && isset($_SESSION['user_id'])) {
+    $response['loggedin'] = true;
+    // ส่งข้อมูลที่จำเป็นกลับไป ไม่ควรส่งรหัสผ่าน
+    $response['user'] = [
+        'id' => $_SESSION['user_id'],
+        'name' => $_SESSION['name'],
+        'user_type' => $_SESSION['user_type']
     ];
 }
 
+$conn->close();
 echo json_encode($response);
 ?>

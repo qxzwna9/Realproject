@@ -1,50 +1,32 @@
-<script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-
-const email = ref('');
-const password = ref('');
-const message = ref('');
-const router = useRouter();
-
-const handleLogin = async () => {
-  try {
-    const apiUrl = 'http://localhost:8080/ProjectReal/db/login.php';
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email.value, password: password.value }),
-    });
-    const result = await response.json();
-    if (result.status === 'success') {
-      // Redirect based on user type
-      if (result.user.user_type === 'admin') {
-        router.push('/admin');
-      } else {
-        router.push('/member');
-      }
-    } else {
-      message.value = result.message;
+<script>
+export default {
+  layout: 'guest', // <-- บอกให้หน้านี้ใช้ guest layout
+  data() {
+    return {
+      form: { email: '', password: '' },
+      message: '',
+      messageType: '',
+      loading: false
     }
-  } catch (error) {
-    message.value = 'Login failed: ' + error.message;
+  },
+  methods: {
+    async handleSubmit() {
+      this.loading = true;
+      this.message = '';
+      try {
+        // --- ส่วนที่แก้ไข ---
+        const user = await this.$store.dispatch('login', this.form);
+        this.message = 'เข้าสู่ระบบสำเร็จ!';
+        this.messageType = 'success';
+        const destination = user.user_type === 'admin' ? '/AdminIndex' : '/MemberIndex';
+        this.$router.push(destination);
+      } catch (error) {
+        this.message = error.response ? error.response.data.message : error.message;
+        this.messageType = 'error';
+      } finally {
+        this.loading = false;
+      }
+    }
   }
-};
+}
 </script>
-<template>
-  <div class="auth-container">
-    <form @submit.prevent="handleLogin" class="auth-form">
-      <h1>Login</h1>
-      <div v-if="message" class="message error">{{ message }}</div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" v-model="email" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" v-model="password" required>
-      </div>
-      <button type="submit">Login</button>
-    </form>
-  </div>
-</template>

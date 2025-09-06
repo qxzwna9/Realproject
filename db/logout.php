@@ -1,14 +1,24 @@
 <?php
-session_start();
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Credentials: true");
+// db/logout.php
+require_once 'connectdb.php'; // เรียกใช้ไฟล์เชื่อมต่อกลางเพื่อจัดการ Headers
 
-// Unset all session variables
+session_start();
+
+// ล้างค่าทั้งหมดใน session
 $_SESSION = array();
 
-// Destroy the session
+// ทำลาย session cookie
+if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+    );
+}
+
+// ทำลาย session อย่างสมบูรณ์
 session_destroy();
 
+// ส่งการตอบกลับว่าสำเร็จเป็น JSON
 echo json_encode(['status' => 'success', 'message' => 'Logged out successfully.']);
 ?>

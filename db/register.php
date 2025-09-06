@@ -1,5 +1,5 @@
 <?php
-require_once 'connectdb.php'; // <-- แก้ไขเป็น connectdb.php
+require_once 'connectdb.php'; // เรียกใช้ไฟล์เชื่อมต่อกลาง
 
 $response = ['status' => 'error', 'message' => 'Invalid input.'];
 $data = json_decode(file_get_contents("php://input"));
@@ -14,7 +14,7 @@ if (!isset($data->name) || !isset($data->email) || !isset($data->password) || em
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        http_response_code(409);
+        http_response_code(409); // Conflict
         $response['message'] = 'อีเมลนี้มีผู้ใช้งานแล้ว';
     } else {
         $hashed_password = password_hash($data->password, PASSWORD_BCRYPT);
@@ -23,7 +23,7 @@ if (!isset($data->name) || !isset($data->email) || !isset($data->password) || em
         $stmt_insert->bind_param("sss", $data->name, $data->email, $hashed_password);
 
         if ($stmt_insert->execute()) {
-            http_response_code(201);
+            http_response_code(201); // Created
             $response['status'] = 'success';
             $response['message'] = 'สมัครสมาชิกสำเร็จ!';
         } else {
