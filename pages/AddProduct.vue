@@ -123,12 +123,21 @@ const addProduct = async () => {
 </template>
 
 <style scoped>
+input[type="file"] {
+  background-color: #000000; /* สีพื้นหลังที่ต้องการ */
+  color: #a7a2a2; /* สีตัวหนังสือ */
+  border-radius: 4px;
+  padding: 0.75rem;
+  border: 1px solid #ffffff;
+}
+
 .add-product-container {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgb(224, 81, 81);
+  background-color: #000000;
 }
 .add-product-form .form-group {
   margin-bottom: 1.5rem;
@@ -141,15 +150,17 @@ label {
 input, textarea, select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ccc;
+  border: 1px solid #ffffff;
+  background-color: #000000;
+  color: #a7a2a2;
   border-radius: 4px;
   font-size: 1rem;
 }
 .submit-btn {
   width: 100%;
   padding: 0.8rem;
-  background-color: #28a745;
-  color: white;
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   border: none;
   border-radius: 4px;
   font-size: 1.1rem;
@@ -157,7 +168,7 @@ input, textarea, select {
   transition: background-color 0.2s;
 }
 .submit-btn:hover {
-  background-color: #218838;
+  background-color: #1b2647;
 }
 .message {
   padding: 1rem;
