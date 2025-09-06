@@ -1,16 +1,39 @@
 <?php
-$host = 'localhost';
-$dbname = 'shirt_shop';
-$username = 'root';
-$password = '';
+// db/connectdb.php
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-    // ตั้งค่า PDO ให้แสดง error เป็น exception
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(['error' => 'เชื่อมต่อฐานข้อมูลล้มเหลว: ' . $e->getMessage()]);
-    exit;
+// --- การตั้งค่าการเชื่อมต่อฐานข้อมูล ---
+$servername = "127.0.0.1";
+$username = "root";
+$password = "";
+$dbname = "shirt_shop";
+
+// --- ส่วนแก้ไข CORS ---
+// **สำคัญ:** แก้ไข http://localhost:3000 ให้ตรงกับ Port ของ Nuxt dev server ของคุณ (ปกติคือ 3000)
+header("Access-Control-Allow-Origin: http://localhost:3000"); 
+header("Access-Control-Allow-Credentials: true");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+// **สำคัญ:** ส่วนนี้สำหรับจัดการ Preflight Request (OPTIONS) ที่เบราว์เซอร์ส่งมาถามก่อน
+// เมื่อเบราว์เซอร์ส่ง OPTIONS request มา ให้เราตอบกลับไปว่า "อนุญาต" แล้วจบการทำงานเลย
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit(0);
 }
+// --- จบส่วนแก้ไข CORS ---
+
+
+// --- สร้างการเชื่อมต่อ ---
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// --- ตรวจสอบการเชื่อมต่อ ---
+if ($conn->connect_error) {
+    http_response_code(500); // Internal Server Error
+    echo json_encode(['status' => 'error', 'message' => 'Database connection failed: ' . $conn->connect_error]);
+    exit();
+}
+
+// ตั้งค่า character set
+$conn->set_charset("utf8mb4");
 ?>
