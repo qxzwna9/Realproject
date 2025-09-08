@@ -6,8 +6,8 @@
           <v-card class="card-glassmorphism pa-6 pa-md-8">
             <h1 class="page-title text-center mb-6">ติดต่อเรา</h1>
             <v-form @submit.prevent="submitForm" ref="form">
-              <v-alert v-if="submitted" type="success" class="mb-6">
-                ขอบคุณสำหรับการติดต่อ! เราจะตอบกลับโดยเร็วที่สุด
+              <v-alert v-if="message" :type="messageType" class="mb-6" text>
+                {{ message }}
               </v-alert>
 
               <v-text-field
@@ -18,6 +18,7 @@
                 dark
                 prepend-inner-icon="mdi-account"
                 class="mb-4"
+                :disabled="loading"
               ></v-text-field>
 
               <v-text-field
@@ -29,6 +30,7 @@
                 dark
                 prepend-inner-icon="mdi-email"
                 class="mb-4"
+                :disabled="loading"
               ></v-text-field>
 
               <v-textarea
@@ -40,9 +42,10 @@
                 rows="4"
                 prepend-inner-icon="mdi-message-text"
                 class="mb-4"
+                :disabled="loading"
               ></v-textarea>
 
-              <v-btn type="submit" color="primary" block large>
+              <v-btn type="submit" color="primary" block large :loading="loading">
                 ส่งข้อความ
               </v-btn>
             </v-form>
@@ -62,20 +65,34 @@ export default {
                 email: '',
                 message: ''
             },
-            submitted: false
+            loading: false,
+            message: '',
+            messageType: '' // 'success' or 'error'
         }
     },
     methods: {
-        submitForm() {
-            // ในส่วนนี้สามารถเพิ่ม logic ส่งข้อมูลไป backend ได้
-            console.log('Form submitted:', this.form);
-            this.submitted = true;
-            this.$refs.form.reset(); // รีเซ็ตฟอร์ม
+        async submitForm() {
+            if (this.loading) return;
+            this.loading = true;
+            this.message = '';
 
-            // ซ่อนข้อความแจ้งเตือนหลังจากผ่านไป 5 วินาที
-            setTimeout(() => {
-                this.submitted = false;
-            }, 5000);
+            try {
+                // ใช้ $axios ที่ตั้งค่าไว้ใน nuxt.config.js เพื่อส่งข้อมูล
+                const response = await this.$axios.post('/contact_submit.php', this.form);
+
+                if (response.data.status === 'success') {
+                    this.message = response.data.message;
+                    this.messageType = 'success';
+                    this.$refs.form.reset(); // รีเซ็ตฟอร์ม
+                } else {
+                    throw new Error(response.data.message || 'เกิดข้อผิดพลาดที่ไม่รู้จัก');
+                }
+            } catch (error) {
+                this.message = error.response ? error.response.data.message : 'ไม่สามารถส่งข้อความได้ กรุณาลองใหม่อีกครั้ง';
+                this.messageType = 'error';
+            } finally {
+                this.loading = false;
+            }
         }
     },
     head() {
