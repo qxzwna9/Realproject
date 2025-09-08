@@ -1,30 +1,42 @@
 <template>
   <v-app dark>
-    <v-app-bar :clipped-left="clipped" fixed app color="transparent" flat dark height="60px" style="background:rgba(255,255,255,0); box-shadow: none; border: none;">
+    <v-app-bar 
+      :clipped-left="clipped" 
+      absolute
+      color="transparent" 
+      flat 
+      dark 
+      height="60px"
+    >
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn text to="/">หน้าหลัก</v-btn>
-      <v-btn text to="/info">ข้อมูล</v-btn>
-      <v-btn text to="/contact">ติดต่อ</v-btn>
-      <v-btn text to="/shirt">สินค้า</v-btn>
-      
-      <v-spacer />
 
-      <v-btn color="error" @click="handleLogout">
-        <v-icon left>mdi-logout</v-icon>
-        ออกจากระบบ
-      </v-btn>
+      <div v-if="user">
+        <v-btn text to="/">หน้าหลัก</v-btn>
+        <v-btn text to="/info">ข้อมูล</v-btn>
+        <v-btn text to="/contact">ติดต่อ</v-btn>
+        <v-btn text to="/shirt">สินค้า</v-btn>
+        <v-btn color="error" @click="handleLogout">
+          <v-icon left>mdi-logout</v-icon>
+          ออกจากระบบ
+        </v-btn>
+      </div>
 
+      <div v-else>
+        <v-btn text to="/">หน้าหลัก</v-btn>
+        <v-btn text to="/shirt">สินค้า</v-btn>
+        <v-btn text to="/contact">ติดต่อเรา</v-btn>
+        <v-btn outlined to="/Login">เข้าสู่ระบบ</v-btn>
+      </div>
     </v-app-bar>
     
     <v-main>
-      <v-container fluid style="padding: 0; margin: 0; max-width: 100vw; background: transparent;">
-        <nuxt />
-      </v-container>
+      <nuxt />
     </v-main>
 
-    <v-footer>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+    <v-footer app absolute color="transparent">
+       <v-spacer></v-spacer>
+      <span class="white--text">&copy; {{ new Date().getFullYear() }} ELVURE SHOP</span>
     </v-footer>
   </v-app>
 </template>
@@ -35,16 +47,26 @@ export default {
     return {
       clipped: false,
       title: 'ELVURE SHOP',
+      user: null
     }
   },
+  mounted() {
+    this.checkUser();
+  },
   methods: {
+    async checkUser() {
+      try {
+        const response = await this.$axios.get('/check_session.php');
+        if (response.data.loggedin) {
+          this.user = response.data.user;
+        }
+      } catch (error) {
+        // console.error('Error checking user session:', error);
+      }
+    },
     async handleLogout() {
       try {
-        // เรียก API logout
         await this.$axios.post('/logout.php');
-        
-        // หลังจาก logout สำเร็จ ให้ redirect ไปหน้า Login
-        // แนะนำให้ใช้ window.location เพื่อให้แน่ใจว่า state ทั้งหมดถูกล้าง
         window.location.href = '/Login';
       } catch (error) {
         console.error('Logout failed:', error);

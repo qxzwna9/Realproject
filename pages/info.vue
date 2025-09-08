@@ -1,124 +1,120 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-
-// สร้างตัวแปรแบบ reactive เพื่อเก็บข้อมูลสินค้า
-const products = ref([]);
-const isLoading = ref(true); // ตัวแปรสำหรับสถานะ Loading
-const error = ref(null); // ตัวแปรสำหรับเก็บ Error
-
-// onMounted คือฟังก์ชันที่จะทำงานอัตโนมัติเมื่อ Component ถูกสร้างขึ้น
-onMounted(async () => {
-  try {
-    // URL ของไฟล์ PHP ที่เราสร้างไว้ (ต้องใส่ path ให้ถูกต้อง)
-    const apiUrl = 'http://localhost:8080/ProjectReal/db/shirt_select.php'; // **<-- แก้ไข path ตรงนี้ให้ตรงกับโปรเจกต์ของคุณ**
-
-    const response = await fetch(apiUrl);
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    // แปลงข้อมูล JSON ที่ได้จาก PHP มาเก็บในตัวแปร products
-    products.value = await response.json();
-
-  } catch (e) {
-    // หากเกิดข้อผิดพลาดในการดึงข้อมูล
-    error.value = 'ไม่สามารถดึงข้อมูลได้: ' + e.message;
-    console.error("Fetch error:", e);
-  } finally {
-    // ไม่ว่าจะสำเร็จหรือล้มเหลว ให้ปิดสถานะ Loading
-    isLoading.value = false;
-  }
-});
-</script>
-
 <template>
-  <div class="product-container">
-    <h1>รายการสินค้าทั้งหมด</h1>
+  <div class="info-bg">
+    <v-container>
+      <v-card class="mt-8 pa-4 card-glassmorphism">
+        <v-card-title class="headline white--text">
+          <v-icon left color="white">mdi-tshirt-crew</v-icon>
+          รายการสินค้าทั้งหมด
+        </v-card-title>
 
-    <div v-if="isLoading" class="loading">
-      <p>กำลังโหลดข้อมูลสินค้า...</p>
-    </div>
+        <v-card-text>
+          <div v-if="isLoading" class="text-center pa-8">
+            <v-progress-circular indeterminate color="white" size="64"></v-progress-circular>
+            <p class="mt-4 white--text">กำลังโหลดข้อมูลสินค้า...</p>
+          </div>
 
-    <div v-else-if="error" class="error">
-      <p>{{ error }}</p>
-    </div>
+          <div v-else-if="error" class="error-message">
+            <v-alert type="error" dense>
+              {{ error }}
+            </v-alert>
+          </div>
 
-    <table v-else-if="products.length > 0" class="product-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>รูปภาพ</th>
-          <th>ชื่อสินค้า</th>
-          <th>หมวดหมู่</th>
-          <th>ราคา (บาท)</th>
-          <th>สต็อก</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="product in products" :key="product.product_id">
-          <td>{{ product.product_id }}</td>
-          <td>
-            <img :src="'http://localhost:8080/ProjectReal/images/' + product.image" :alt="product.product_name" class="product-image">
-          </td>
-          <td>{{ product.product_name }}</td>
-          <td>{{ product.category_name }}</td>
-          <td>{{ parseFloat(product.price).toFixed(2) }}</td>
-          <td>{{ product.stock }}</td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <div v-else class="no-data">
-      <p>ไม่พบข้อมูลสินค้าในฐานข้อมูล</p>
-    </div>
-
+          <v-data-table
+            v-else
+            :headers="headers"
+            :items="products"
+            :items-per-page="5"
+            class="elevation-1 transparent-table"
+            dark
+          >
+            <template v-slot:item.image="{ item }">
+              <v-img
+                :src="'http://localhost:8080/ProjectReal/images/' + item.image"
+                :alt="item.product_name"
+                class="product-image my-2"
+                height="70"
+                width="70"
+                contain
+              ></v-img>
+            </template>
+            <template v-slot:item.price="{ item }">
+              <span>{{ parseFloat(item.price).toFixed(2) }} ฿</span>
+            </template>
+          </v-data-table>
+        </v-card-text>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
+<script>
+export default {
+  data() {
+    return {
+      products: [],
+      isLoading: true,
+      error: null,
+      headers: [
+        { text: 'รูปภาพ', value: 'image', sortable: false, width: '100px' },
+        { text: 'ชื่อสินค้า', value: 'product_name' },
+        { text: 'หมวดหมู่', value: 'category_name' },
+        { text: 'ราคา', value: 'price' },
+        { text: 'สต็อก', value: 'stock' },
+      ],
+    };
+  },
+  async mounted() {
+    try {
+      const apiUrl = 'http://localhost:8080/ProjectReal/db/shirt_select.php';
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      this.products = await response.json();
+    } catch (e) {
+      this.error = 'ไม่สามารถดึงข้อมูลได้: ' + e.message;
+      console.error("Fetch error:", e);
+    } finally {
+      this.isLoading = false;
+    }
+  },
+};
+</script>
+
 <style scoped>
-.product-container {
-  font-family: Arial, sans-serif;
-  max-width: 1000px;
-  margin: 2rem auto;
-  padding: 1rem;
-}
-
-.product-table {
+.info-bg {
+  min-height: 100vh;
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  padding-bottom: 40px;
 }
 
-.product-table th, .product-table td {
-  border: 1px solid #64626273;
-  padding: 12px;
-  text-align: left;
+.card-glassmorphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
 }
 
-.product-table th {
-  background-color: #3b3b3b;
+.headline {
   font-weight: bold;
 }
 
-.product-table tbody tr:hover {
-  background-color: #4e4e4e;
+.transparent-table {
+  background: transparent !important;
+}
+
+.transparent-table >>> thead, .transparent-table >>> tbody, .transparent-table >>> tfoot {
+  background: transparent !important;
 }
 
 .product-image {
-  max-width: 60px;
-  border-radius: 4px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.loading, .error, .no-data {
-  text-align: center;
-  padding: 2rem;
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.error {
-  color: red;
+.error-message {
+  max-width: 600px;
+  margin: 2rem auto;
 }
 </style>
