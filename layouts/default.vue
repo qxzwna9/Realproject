@@ -1,32 +1,35 @@
 <template>
   <v-app dark>
     <v-app-bar 
+      app
       :clipped-left="clipped" 
-      absolute
-      color="transparent" 
+      color="rgba(17, 24, 39, 0.8)" 
       flat 
       dark 
       height="60px"
+      class="navbar-style"
     >
-      <v-toolbar-title v-text="title" />
+      <v-toolbar-title class="brand-title" v-text="title" />
       <v-spacer />
 
       <div v-if="user">
-        <v-btn text to="/">หน้าหลัก</v-btn>
-        <v-btn text to="/info">ข้อมูล</v-btn>
-        <v-btn text to="/contact">ติดต่อ</v-btn>
-        <v-btn text to="/shirt">สินค้า</v-btn>
-        <v-btn color="error" @click="handleLogout">
+        <v-btn text to="/" class="nav-btn">หน้าหลัก</v-btn>
+        <v-btn text to="/about" class="nav-btn">เกี่ยวกับเรา</v-btn>
+        <v-btn text to="/info" class="nav-btn">ข้อมูล</v-btn>
+        <v-btn text to="/contact" class="nav-btn">ติดต่อ</v-btn>
+        <v-btn text to="/shirt" class="nav-btn">สินค้า</v-btn>
+        <v-btn color="error" @click="handleLogout" class="logout-btn">
           <v-icon left>mdi-logout</v-icon>
           ออกจากระบบ
         </v-btn>
       </div>
 
       <div v-else>
-        <v-btn text to="/">หน้าหลัก</v-btn>
-        <v-btn text to="/shirt">สินค้า</v-btn>
-        <v-btn text to="/contact">ติดต่อเรา</v-btn>
-        <v-btn outlined to="/Login">เข้าสู่ระบบ</v-btn>
+        <v-btn text to="/" class="nav-btn">หน้าหลัก</v-btn>
+        <v-btn text to="/shirt" class="nav-btn">สินค้า</v-btn>
+        <v-btn text to="/contact" class="nav-btn">ติดต่อเรา</v-btn>
+        <v-btn text to="/about" class="nav-btn">เกี่ยวกับเรา</v-btn>
+        <v-btn outlined to="/Login" class="login-btn">เข้าสู่ระบบ</v-btn>
       </div>
     </v-app-bar>
     
@@ -84,5 +87,29 @@ export default {
   padding: 0 32px !important;
   align-items: center;
   justify-content: center;
+}
+
+.navbar-style {
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.brand-title {
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.nav-btn {
+  font-size: 1rem !important;
+  padding: 0 24px !important;
+  transition: all 0.2s ease-in-out;
+}
+
+.nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.login-btn, .logout-btn {
+  font-weight: bold !important;
 }
 </style>
