@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1 class="text-h4 font-weight-bold grey--text text--darken-3 mb-4">Manage Products</h1>
-    <v-card class="rounded-lg">
+    <h1 class="page-title">Product Management</h1>
+    <p class="page-subtitle">Curate your exclusive product collection.</p>
+    <v-card class="table-card">
       <v-card-title>
-        <span class="subtitle-1 font-weight-bold">All Products</span>
         <v-spacer></v-spacer>
-        <v-btn color="primary" to="/admin/add-product">
+        <v-btn outlined color="#D4AF37" to="/admin/add-product">
           <v-icon left>mdi-plus</v-icon>
-          Add Product
+          Add New Product
         </v-btn>
       </v-card-title>
       <v-data-table
@@ -15,6 +15,7 @@
         :items="products"
         :loading="loading"
         loading-text="Loading products..."
+        class="luxury-table"
       >
         <template v-slot:item.image="{ item }">
           <v-avatar tile size="50" class="ma-2 rounded">
@@ -25,16 +26,16 @@
           {{ parseFloat(item.price).toFixed(2) }} ฿
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-icon small class="mr-2" @click="editItem(item)" title="Edit Product">mdi-pencil</v-icon>
-          <v-icon small @click="deleteItem(item)" color="error" title="Delete Product">mdi-delete</v-icon>
+          <v-btn icon small class="mr-2" @click="editItem(item)" title="Edit Product"><v-icon small>mdi-pencil-outline</v-icon></v-btn>
+          <v-btn icon small @click="deleteItem(item)" title="Delete Product"><v-icon small>mdi-delete-outline</v-icon></v-btn>
         </template>
       </v-data-table>
     </v-card>
 
     <v-dialog v-model="dialog" max-width="700px" persistent>
-      <v-card>
-        <v-card-title class="text-h5 grey--text text--darken-2">
-          Edit Product
+      <v-card class="dialog-card">
+        <v-card-title class="dialog-title">
+          Edit Masterpiece
         </v-card-title>
         <v-card-text class="pt-4">
           <v-container>
@@ -86,10 +87,10 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pb-4">
           <v-spacer></v-spacer>
-          <v-btn color="grey darken-1" text @click="close">Cancel</v-btn>
-          <v-btn color="primary" text @click="save" :loading="saving">Save Changes</v-btn>
+          <v-btn text @click="close">Cancel</v-btn>
+          <v-btn dark color="#1A1A1A" @click="save" :loading="saving">Save Changes</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -98,6 +99,7 @@
 
 <script>
 export default {
+  layout: 'admin',
   middleware: 'admin-auth',
   data () {
     return {
@@ -184,16 +186,13 @@ export default {
       formData.append('price', this.editedItem.price);
       formData.append('stock', this.editedItem.stock);
       formData.append('category_id', this.editedItem.category_id);
-
       if (this.editedItem.newImageFile) {
         formData.append('image', this.editedItem.newImageFile);
       }
-
       try {
         const response = await this.$axios.post('/product_update_with_image.php', formData, {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
-
         if (response.data.status === 'success') {
           alert('Product updated successfully!');
           this.close();
@@ -226,3 +225,15 @@ export default {
   },
 }
 </script>
+
+<style>
+.dialog-card {
+  border-radius: 4px;
+}
+.dialog-title {
+  font-family: 'Playfair Display', serif;
+  color: #222;
+  font-size: 1.8rem;
+  padding-bottom: 1.5rem;
+}
+</style>

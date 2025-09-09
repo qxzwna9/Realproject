@@ -1,46 +1,14 @@
 <template>
   <div>
-    <h1 class="text-h4 font-weight-bold grey--text text--darken-3 mb-2">Admin Dashboard</h1>
-    <p class="subtitle-1 grey--text">Welcome back, {{ $store.state.user ? $store.state.user.name : 'Admin' }}! Here's a quick overview.</p>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle">A brief overview of your luxury store management.</p>
 
     <v-row>
-      <v-col cols="12" md="4">
-        <v-card class="pa-4 rounded-lg" to="/admin/users" hover>
-          <div class="d-flex align-center">
-            <v-avatar color="blue lighten-4" size="60">
-              <v-icon color="primary">mdi-account-group</v-icon>
-            </v-avatar>
-            <div class="ml-4">
-              <div class="text-h6 font-weight-bold">Manage Users</div>
-              <div class="caption">View, Edit, Delete Users</div>
-            </div>
-          </div>
-        </v-card>
-      </v-col>
-      <v-col cols="12" md="4">
-        <v-card class="pa-4 rounded-lg" to="/admin/products" hover>
-           <div class="d-flex align-center">
-            <v-avatar color="green lighten-4" size="60">
-              <v-icon color="success">mdi-tshirt-crew</v-icon>
-            </v-avatar>
-            <div class="ml-4">
-              <div class="text-h6 font-weight-bold">Manage Products</div>
-              <div class="caption">View, Edit, Delete Products</div>
-            </div>
-          </div>
-        </v-card>
-      </v-col>
-       <v-col cols="12" md="4">
-        <v-card class="pa-4 rounded-lg" to="/admin/add-product" hover>
-           <div class="d-flex align-center">
-            <v-avatar color="orange lighten-4" size="60">
-              <v-icon color="orange">mdi-plus-box</v-icon>
-            </v-avatar>
-            <div class="ml-4">
-              <div class="text-h6 font-weight-bold">Add a New Product</div>
-              <div class="caption">Create a new item for your store</div>
-            </div>
-          </div>
+      <v-col v-for="(item, i) in overviewItems" :key="i" cols="12" md="4">
+        <v-card class="overview-card" :to="item.to" hover>
+          <v-icon class="card-icon">{{ item.icon }}</v-icon>
+          <div class="card-title">{{ item.title }}</div>
+          <div class="card-subtitle">{{ item.subtitle }}</div>
         </v-card>
       </v-col>
     </v-row>
@@ -49,7 +17,58 @@
 
 <script>
 export default {
-  // ไม่มี layout: 'admin'
-  middleware: 'admin-auth'
+  layout: 'admin',
+  middleware: 'admin-auth',
+  data() {
+    return {
+      overviewItems: [
+        { icon: 'mdi-account-group-outline', title: 'User Management', subtitle: 'Oversee all user accounts', to: '/admin/users' },
+        { icon: 'mdi-package-variant-closed', title: 'Product Management', subtitle: 'Curate your product collection', to: '/admin/products' },
+        { icon: 'mdi-plus-circle-outline', title: 'Add a New Product', subtitle: 'Introduce a new masterpiece', to: '/admin/add-product' },
+      ]
+    }
+  }
 }
 </script>
+
+<style scoped>
+.page-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+.page-subtitle {
+  font-size: 1.1rem;
+  color: #777;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+.overview-card {
+  padding: 2.5rem;
+  border-radius: 4px;
+  border: 1px solid #E0E0E0;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+.overview-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  border-color: #D4AF37;
+}
+.card-icon {
+  font-size: 3rem;
+  color: #D4AF37;
+  margin-bottom: 1rem;
+}
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #222;
+}
+.card-subtitle {
+  font-size: 0.9rem;
+  color: #888;
+  font-weight: 300;
+}
+</style>
