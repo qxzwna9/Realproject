@@ -17,7 +17,8 @@ export default {
   loading: { color: '#fff' },
   css: [],
   plugins: [
-    '~/plugins/axios.js'
+    '~/plugins/axios.js',
+    '~/plugins/auth-init.js' // <-- เพิ่มบรรทัดนี้เข้ามา
   ],
   buildModules: [
     '@nuxtjs/vuetify'

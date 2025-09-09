@@ -140,7 +140,7 @@ export default {
 .register-container {
   height: 100vh;
   width: 100vw;
-  background: #111;
+  background: #111827; /* <-- เปลี่ยนสีตรงนี้ */
   font-family: 'Jost', sans-serif;
   overflow: hidden; /* Prevent scrollbars */
 }

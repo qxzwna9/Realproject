@@ -92,9 +92,7 @@ export default {
     },
     buyProduct(shirt) {
       if (this.$store.state.isAuthenticated) {
-        // ในส่วนนี้คือส่วนที่จะเพิ่มสินค้าลงตะกร้า
-        // ในตอนนี้จะแสดงข้อความเป็นตัวอย่าง
-        console.log('Added to cart:', shirt.product_name);
+        this.$store.dispatch('addToCart', shirt);
         alert(`เพิ่ม '${shirt.product_name}' ลงในตะกร้าแล้ว`);
       } else {
         // หากยังไม่ login จะ redirect ไปหน้า Login

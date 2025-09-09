@@ -12,13 +12,18 @@
       <v-toolbar-title class="brand-title" v-text="title" />
       <v-spacer />
 
-      <div v-if="user">
+      <div v-if="$store.state.isAuthenticated">
         <v-btn text to="/" class="nav-btn">หน้าหลัก</v-btn>
         <v-btn text to="/about" class="nav-btn">เกี่ยวกับเรา</v-btn>
         <v-btn text to="/info" class="nav-btn">ข้อมูล</v-btn>
         <v-btn text to="/contact" class="nav-btn">ติดต่อ</v-btn>
         <v-btn text to="/shirt" class="nav-btn">สินค้า</v-btn>
-        <v-btn color="error" @click="handleLogout" class="logout-btn">
+
+        <v-btn icon to="/cart" class="ml-2" title="ตะกร้าสินค้า">
+          <v-icon>mdi-cart</v-icon>
+        </v-btn>
+
+        <v-btn color="error" @click="handleLogout" class="logout-btn ml-2">
           <v-icon left>mdi-logout</v-icon>
           ออกจากระบบ
         </v-btn>
@@ -50,31 +55,17 @@ export default {
     return {
       clipped: false,
       title: 'ELVURE SHOP',
-      user: null
+      // ไม่จำเป็นต้องใช้ user: null ในนี้แล้ว เพราะเราจะใช้ข้อมูลจาก store โดยตรง
     }
   },
   mounted() {
-    this.checkUser();
+    // ปลั๊กอิน auth-init.js จะจัดการเรื่องนี้แทน เราจึงไม่จำเป็นต้องเรียก checkUser() ที่นี่แล้ว
+    this.$store.dispatch('initializeCart');
   },
   methods: {
-    async checkUser() {
-      try {
-        const response = await this.$axios.get('/check_session.php');
-        if (response.data.loggedin) {
-          this.user = response.data.user;
-        }
-      } catch (error) {
-        // console.error('Error checking user session:', error);
-      }
-    },
+    // ลบ method checkUser() เดิมออกไป และเปลี่ยน handleLogout ให้เรียก action จาก store
     async handleLogout() {
-      try {
-        await this.$axios.post('/logout.php');
-        window.location.href = '/Login';
-      } catch (error) {
-        console.error('Logout failed:', error);
-        alert('เกิดข้อผิดพลาดในการออกจากระบบ');
-      }
+      await this.$store.dispatch('logout');
     }
   }
 }
