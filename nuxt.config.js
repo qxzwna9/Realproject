@@ -18,7 +18,7 @@ export default {
   css: [],
   plugins: [
     '~/plugins/axios.js',
-    '~/plugins/auth-init.js' // <-- เพิ่มบรรทัดนี้เข้ามา
+    '~/plugins/auth-init.js'
   ],
   buildModules: [
     '@nuxtjs/vuetify'
@@ -28,13 +28,14 @@ export default {
     '@nuxtjs/pwa'
   ],
   axios: {
-    baseURL: 'http://localhost:8080/projectreal/db/', // <-- URL หลักของ API
+    // --- แก้ไขบรรทัดนี้ ---
+    baseURL: 'http://localhost:8080/ProjectReal/db/', // <-- เปลี่ยนจาก projectreal เป็น ProjectReal
     credentials: true
   },
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true, // ตั้งค่าโหมดมืดเป็นค่าเริ่มต้น
+      dark: true,
       themes: {
         dark: {
           primary: colors.blue.darken2,

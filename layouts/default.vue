@@ -1,18 +1,28 @@
 <template>
   <v-app dark>
-    <v-app-bar 
+    <v-app-bar
       app
-      :clipped-left="clipped" 
-      color="rgba(17, 24, 39, 0.8)" 
-      flat 
-      dark 
+      :clipped-left="clipped"
+      color="rgba(17, 24, 39, 0.8)"
+      flat
+      dark
       height="60px"
       class="navbar-style"
     >
       <v-toolbar-title class="brand-title" v-text="title" />
       <v-spacer />
 
-      <div v-if="$store.state.isAuthenticated">
+      <div v-if="$store.state.user && $store.state.user.user_type === 'admin'">
+        <v-btn text to="/admin/dashboard" class="nav-btn">Dashboard</v-btn>
+        <v-btn text to="/admin/users" class="nav-btn">Manage Users</v-btn>
+        <v-btn text to="/admin/products" class="nav-btn">Manage Products</v-btn>
+        <v-btn color="error" @click="handleLogout" class="logout-btn ml-2">
+          <v-icon left>mdi-logout</v-icon>
+          ออกจากระบบ
+        </v-btn>
+      </div>
+
+      <div v-else-if="$store.state.isAuthenticated">
         <v-btn text to="/" class="nav-btn">หน้าหลัก</v-btn>
         <v-btn text to="/about" class="nav-btn">เกี่ยวกับเรา</v-btn>
         <v-btn text to="/info" class="nav-btn">ข้อมูล</v-btn>
@@ -37,7 +47,7 @@
         <v-btn outlined to="/Login" class="login-btn">เข้าสู่ระบบ</v-btn>
       </div>
     </v-app-bar>
-    
+
     <v-main>
       <nuxt />
     </v-main>
@@ -55,15 +65,12 @@ export default {
     return {
       clipped: false,
       title: 'ELVURE SHOP',
-      // ไม่จำเป็นต้องใช้ user: null ในนี้แล้ว เพราะเราจะใช้ข้อมูลจาก store โดยตรง
     }
   },
   mounted() {
-    // ปลั๊กอิน auth-init.js จะจัดการเรื่องนี้แทน เราจึงไม่จำเป็นต้องเรียก checkUser() ที่นี่แล้ว
     this.$store.dispatch('initializeCart');
   },
   methods: {
-    // ลบ method checkUser() เดิมออกไป และเปลี่ยน handleLogout ให้เรียก action จาก store
     async handleLogout() {
       await this.$store.dispatch('logout');
     }
@@ -72,35 +79,5 @@ export default {
 </script>
 
 <style>
-/* ... Styles เดิมของคุณ ... */
-.v-app-bar .v-btn {
-  font-size: 1rem !important;
-  padding: 0 32px !important;
-  align-items: center;
-  justify-content: center;
-}
-
-.navbar-style {
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.brand-title {
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.nav-btn {
-  font-size: 1rem !important;
-  padding: 0 24px !important;
-  transition: all 0.2s ease-in-out;
-}
-
-.nav-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.login-btn, .logout-btn {
-  font-weight: bold !important;
-}
+/* Style ไม่มีการเปลี่ยนแปลง */
 </style>

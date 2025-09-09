@@ -1,18 +1,66 @@
 <?php
-include 'connectdb.php';
+session_start();
+require_once 'connectdb.php';
 
-$product_id = $_GET['product_id'];
+$response = ['status' => 'error', 'message' => 'An error occurred.'];
 
-$sql = "DELETE FROM products WHERE product_id=?";
+// 1. ตรวจสอบสิทธิ์ว่าเป็น Admin หรือไม่
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
+    http_response_code(403);
+    $response['message'] = 'Forbidden';
+    echo json_encode($response);
+    exit();
+}
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $product_id);
+// 2. รับข้อมูล product_id จาก JSON body (POST request)
+$data = json_decode(file_get_contents("php://input"));
 
-if ($stmt->execute()) {
-    echo "ลบสินค้าสำเร็จ";
-} else {
-    echo "เกิดข้อผิดพลาด: " . $conn->error;
+if (!isset($data->product_id)) {
+    http_response_code(400);
+    $response['message'] = 'Product ID is required.';
+    echo json_encode($response);
+    exit();
+}
+
+$product_id = $data->product_id;
+
+// เริ่ม Transaction เพื่อให้แน่ใจว่าทุกอย่างทำงานสำเร็จทั้งหมด
+$conn->begin_transaction();
+
+try {
+    // 3. (สำคัญ) ลบข้อมูลสินค้าชิ้นนี้ออกจากตาราง `order_items` ก่อน
+    // เพื่อปลดล็อคข้อจำกัดของฐานข้อมูล (Foreign Key Constraint)
+    $sql_order_items = "DELETE FROM order_items WHERE product_id = ?";
+    $stmt_order_items = $conn->prepare($sql_order_items);
+    $stmt_order_items->bind_param("i", $product_id);
+    $stmt_order_items->execute();
+    $stmt_order_items->close();
+
+    // 4. ลบสินค้าออกจากตาราง `products`
+    $sql_products = "DELETE FROM products WHERE product_id = ?";
+    $stmt_products = $conn->prepare($sql_products);
+    $stmt_products->bind_param("i", $product_id);
+
+    if ($stmt_products->execute()) {
+        // ตรวจสอบว่ามีแถวที่ถูกลบจริงหรือไม่
+        if ($stmt_products->affected_rows > 0) {
+            $conn->commit(); // ยืนยันการเปลี่ยนแปลงทั้งหมด
+            $response['status'] = 'success';
+            $response['message'] = 'Product deleted successfully.';
+        } else {
+            throw new Exception('Product not found or already deleted.');
+        }
+    } else {
+        throw new Exception($conn->error);
+    }
+    $stmt_products->close();
+
+} catch (Exception $e) {
+    $conn->rollback(); // หากมีข้อผิดพลาด ให้ย้อนกลับการเปลี่ยนแปลงทั้งหมด
+    http_response_code(500);
+    $response['message'] = 'Failed to delete product: ' . $e->getMessage();
 }
 
 $conn->close();
+echo json_encode($response);
 ?>

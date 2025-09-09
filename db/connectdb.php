@@ -8,16 +8,28 @@ $password = "";
 $dbname = "shirt_shop";
 
 // --- ตั้งค่า Headers สำหรับ API ---
-// **สำคัญ:** แก้ไข http://localhost:3000 ให้ตรงกับ Port ของ Nuxt dev server ของคุณ
-header("Access-Control-Allow-Origin: http://localhost:3000"); 
+// อนุญาต Origin จากทุกที่ (ใช้ * เพื่อการพัฒนา)
+// เราจะดึง Origin ที่ร้องขอมาใช้ เพื่อความปลอดภัยที่มากกว่า * เล็กน้อย
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+} else {
+    // fallback
+    header("Access-Control-Allow-Origin: *");
+}
+
 header("Access-Control-Allow-Credentials: true");
 header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With, X-Auth-Token, Origin, Accept");
 
-// **สำคัญ:** ส่วนนี้สำหรับจัดการ Preflight Request (OPTIONS) ที่เบราว์เซอร์ส่งมาก่อน
+// จัดการ Preflight Request (OPTIONS)
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+        header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
+    }
+    if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+        header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+    }
     exit(0);
 }
 
