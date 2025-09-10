@@ -37,6 +37,12 @@
           </v-chip>
         </template>
         <template v-slot:item.actions="{ item }">
+          <v-btn v-if="item.status === 'pending'" icon small class="mr-2" @click="approveOrder(item)" title="อนุมัติออเดอร์">
+              <v-icon small color="success">mdi-check-circle-outline</v-icon>
+          </v-btn>
+          <v-btn v-if="item.status === 'pending'" icon small class="mr-2" @click="cancelOrder(item)" title="ปฏิเสธออเดอร์">
+              <v-icon small color="error">mdi-close-circle-outline</v-icon>
+          </v-btn>
           <v-btn icon small class="mr-2" @click="editItem(item)" title="แก้ไขออเดอร์"><v-icon small>mdi-pencil-outline</v-icon></v-btn>
           <v-btn icon small @click="deleteItem(item)" title="ลบออเดอร์"><v-icon small>mdi-delete-outline</v-icon></v-btn>
         </template>
@@ -191,6 +197,39 @@ export default {
           }
       }
     },
+    approveOrder(item) {
+        const itemClone = { ...item, status: 'processing' };
+        this.updateOrderStatus(itemClone);
+    },
+    cancelOrder(item) {
+        if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการปฏิเสธออเดอร์ #${item.order_id}?`)) {
+            const itemClone = { ...item, status: 'cancelled' };
+            this.updateOrderStatus(itemClone);
+        }
+    },
+    async updateOrderStatus(item) {
+        this.saving = true;
+        try {
+            const response = await this.$axios.post('/update_order_status.php', {
+                order_id: item.order_id,
+                status: item.status
+            });
+            if (response.data.status === 'success') {
+                const index = this.orders.findIndex(o => o.order_id === item.order_id);
+                if (index !== -1) {
+                    Object.assign(this.orders[index], item);
+                }
+                alert(`อัปเดตสถานะออเดอร์ #${item.order_id} เป็น ${item.status} เรียบร้อยแล้ว!`);
+            } else {
+                throw new Error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Could not update order status", error);
+            alert("เกิดข้อผิดพลาด: " + (error.response ? error.response.data.message : "An unknown error occurred."));
+        } finally {
+            this.saving = false;
+        }
+    }
   },
 }
 </script>

@@ -25,16 +25,16 @@
       <div v-else-if="$store.state.isAuthenticated">
         <v-btn text to="/MemberIndex" class="nav-btn-large">หน้าหลัก</v-btn>
         <v-btn text to="/shirt" class="nav-btn-large">สินค้า</v-btn>
-        <v-btn text to="/info" class="nav-btn-large">ข้อมูล</v-btn>
+        <v-btn text to="/orders" class="nav-btn-large">ประวัติคำสั่งซื้อ</v-btn> <v-btn text to="/info" class="nav-btn-large">ข้อมูล</v-btn>
         <v-btn text to="/contact" class="nav-btn-large">ติดต่อ</v-btn>
         <v-btn text to="/about" class="nav-btn-large">เกี่ยวกับเรา</v-btn>
-        
+
         <v-spacer />
 
         <v-btn icon to="/cart" class="ml-2" title="ตะกร้าสินค้า">
           <v-icon size="28">mdi-cart</v-icon>
         </v-btn>
-        
+
         <v-btn text to="/profile" class="nav-btn-large ml-2">
           <v-icon left size="28">mdi-account-circle-outline</v-icon>
           {{ $store.state.user ? $store.state.user.name : 'Profile' }}
