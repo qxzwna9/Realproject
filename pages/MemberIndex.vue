@@ -1,80 +1,103 @@
-<script setup>
-// ... import other components like product list ...
-</script>
 <template>
-  <div class="member-bg">
-    <main class="container member-main">
-      <div class="welcome-section">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Welcome" class="welcome-img" />
-        <div>
-          <h1 class="welcome-title">Welcome to our Shop!</h1>
-          <p class="welcome-desc">ยินดีต้อนรับสมาชิกทุกท่าน เลือกชมสินค้าและโปรโมชั่นพิเศษได้เลย!</p>
-        </div>
-      </div>
-      <!-- เพิ่มส่วนแนะนำสินค้า หรือปุ่มลิงก์ไปหน้าสินค้า -->
-      <div class="action-section">
-        <v-btn color="primary" large href="/products">ดูสินค้าทั้งหมด</v-btn>
-      </div>
-    </main>
+  <div class="member-welcome-bg">
+    <v-container class="fill-height">
+      <v-row justify="center" align="center">
+        <v-col cols="12" md="8" lg="6">
+          <v-card flat color="transparent" class="text-center pa-md-10">
+            <v-avatar color="rgba(255, 255, 255, 0.1)" size="120" class="mb-6">
+              <v-icon size="60" color="white">mdi-account-circle-outline</v-icon>
+            </v-avatar>
+
+            <h1 class="welcome-title white--text mb-3">
+              Welcome, {{ userName }}!
+            </h1>
+
+            <p class="welcome-subtitle grey--text text--lighten-1 mx-auto" style="max-width: 450px;">
+              Discover our exclusive collection and enjoy a seamless shopping experience tailored just for you.
+            </p>
+
+            <div class="mt-10">
+              <v-btn
+                x-large
+                color="white"
+                light
+                class="black--text font-weight-bold mx-2"
+                to="/shirt"
+              >
+                <v-icon left>mdi-shopping-outline</v-icon>
+                Shop Collection
+              </v-btn>
+              <v-btn
+                x-large
+                outlined
+                color="white"
+                class="mx-2"
+                to="/profile"
+              >
+                <v-icon left>mdi-account-edit-outline</v-icon>
+                My Profile
+              </v-btn>
+            </div>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
+<script>
+import { mapState } from 'vuex';
+
+export default {
+  middleware: 'auth', // Ensure user is logged in
+  head() {
+    return {
+      title: 'Welcome'
+    }
+  },
+  computed: {
+    ...mapState(['user']),
+    userName() {
+      return this.user ? this.user.name : 'Member';
+    }
+  }
+}
+</script>
+
 <style scoped>
-.member-bg {
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Jost:wght@300;400&display=swap');
+
+.member-welcome-bg {
   min-height: 100vh;
-  /* เปลี่ยนสีพื้นหลังให้สดใสสไตล์ ELVURE SHOP */
-  background: linear-gradient(120deg, #f8fafc 0%, #ffe3ec 50%, #e0c3fc 100%);
-  padding-bottom: 40px;
-}
-
-.member-main {
-  background: #fff;
-  border-radius: 22px;
-  padding: 40px 32px;
-  margin-top: 36px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.12);
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.welcome-section {
+  width: 100%;
+  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
   display: flex;
   align-items: center;
-  gap: 24px;
-  margin-bottom: 32px;
-}
-
-.welcome-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #f0f4ff;
-  box-shadow: 0 2px 8px rgba(31, 38, 135, 0.08);
+  justify-content: center;
 }
 
 .welcome-title {
-  font-size: 2.1rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 3.5rem;
   font-weight: 700;
-  color: #2d3a4b;
-  margin-bottom: 8px;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3);
 }
 
-.welcome-desc {
+.welcome-subtitle {
+  font-family: 'Jost', sans-serif;
   font-size: 1.1rem;
-  color: #5c6f7c;
+  line-height: 1.8;
 }
 
-.action-section {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 24px;
+.v-btn {
+  border-radius: 8px;
+  text-transform: none;
+  letter-spacing: 0.5px;
+  font-size: 1rem;
 }
 
-/* ลบสีแถบ Navbar ด้านบน */
-:deep(.v-app-bar),
-:deep(.navbar) {
-  background: none !important;
-  color: inherit !important;
+.v-avatar {
+  border: 2px solid rgba(255, 255, 255, 0.2);
 }
 </style>

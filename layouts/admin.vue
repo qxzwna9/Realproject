@@ -67,7 +67,7 @@ export default {
         { icon: 'mdi-view-dashboard-outline', title: 'Dashboard', to: '/admin/dashboard' },
         { icon: 'mdi-account-group-outline', title: 'User Management', to: '/admin/users' },
         { icon: 'mdi-package-variant-closed', title: 'Product Management', to: '/admin/products' },
-        { icon: 'mdi-plus-circle-outline', title: 'Add New Product', to: '/admin/add-product' },
+        { icon: 'mdi-receipt-text-outline', title: 'Order Management', to: '/admin/orders' }, // เพิ่มบรรทัดนี้
       ],
       title: 'ELVURE'
     }
@@ -81,31 +81,31 @@ export default {
 }
 </script>
 
-<style>
-/* แนะนำให้เพิ่ม Google Fonts ใน nuxt.config.js
-  head: {
-    link: [
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap' }
-    ]
+  <style>
+  /* แนะนำให้เพิ่ม Google Fonts ใน nuxt.config.js
+    head: {
+      link: [
+        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap' }
+      ]
+    }
+  */
+  .admin-luxury-app {
+    font-family: 'Lato', sans-serif;
+    background-color: #0A0A0A;
   }
-*/
-.admin-luxury-app {
-  font-family: 'Lato', sans-serif;
-  background-color: #0A0A0A;
-}
-.admin-main-content {
-  background-color: #F8F8F8;
-}
-.brand-title {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-.nav-item.v-list-item--active {
-  background-color: rgba(212, 175, 55, 0.1);
-  border-left: 3px solid #D4AF37; /* Gold Accent */
-}
-.gold--text .v-icon, .gold--text .v-list-item__title {
-  color: #D4AF37 !important;
-}
-</style>
+  .admin-main-content {
+    background-color: #F8F8F8;
+  }
+  .brand-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  .nav-item.v-list-item--active {
+    background-color: rgba(212, 175, 55, 0.1);
+    border-left: 3px solid #D4AF37; /* Gold Accent */
+  }
+  .gold--text .v-icon, .gold--text .v-list-item__title {
+    color: #D4AF37 !important;
+  }
+  </style>

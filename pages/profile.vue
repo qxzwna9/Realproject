@@ -1,60 +1,101 @@
 <template>
-  <v-container class="py-8">
-    <v-card class="pa-6 mx-auto" max-width="600">
-      <v-card-title class="headline">แก้ไขข้อมูลส่วนตัว</v-card-title>
-      
-      <div v-if="loading" class="text-center pa-4">
-        <v-progress-circular indeterminate color="primary"></v-progress-circular>
-        <p>กำลังโหลดข้อมูล...</p>
-      </div>
+  <div class="profile-bg">
+    <v-container class="py-16">
+      <v-row justify="center">
+        <v-col cols="12" md="8" lg="7">
+          <v-card class="card-glassmorphism">
+            <v-card-title class="card-title">
+              <v-icon left large color="white">mdi-account-edit-outline</v-icon>
+              Manage Your Profile
+            </v-card-title>
+            <v-card-subtitle class="card-subtitle">
+              Keep your personal details up to date.
+            </v-card-subtitle>
 
-      <v-card-text v-else>
-        <v-alert v-if="message" :type="messageType" class="mb-4">{{ message }}</v-alert>
-        
-        <v-form @submit.prevent="updateProfile" ref="form">
-          <v-text-field
-            v-model="user.name"
-            label="ชื่อ-นามสกุล"
-            required
-            outlined
-            dense
-          ></v-text-field>
-          
-          <v-text-field
-            v-model="user.email"
-            label="อีเมล"
-            type="email"
-            required
-            outlined
-            dense
-          ></v-text-field>
+            <v-divider class="mx-6"></v-divider>
 
-          <v-text-field
-            v-model="user.phone"
-            label="เบอร์โทรศัพท์"
-            outlined
-            dense
-          ></v-text-field>
+            <div v-if="loading" class="text-center pa-12">
+              <v-progress-circular indeterminate color="white" size="64"></v-progress-circular>
+              <p class="mt-4 white--text">Loading your profile...</p>
+            </div>
 
-          <v-textarea
-            v-model="user.address"
-            label="ที่อยู่"
-            rows="3"
-            outlined
-            dense
-          ></v-textarea>
+            <v-card-text v-else class="pa-6 pa-md-8">
+              <v-form @submit.prevent="updateProfile" ref="form">
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="user.name"
+                      label="Full Name"
+                      required
+                      outlined
+                      dark
+                      prepend-inner-icon="mdi-account-outline"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="user.email"
+                      label="Email Address"
+                      type="email"
+                      required
+                      outlined
+                      dark
+                      prepend-inner-icon="mdi-email-outline"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="user.phone"
+                      label="Phone Number"
+                      outlined
+                      dark
+                      prepend-inner-icon="mdi-phone-outline"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-textarea
+                      v-model="user.address"
+                      label="Shipping Address"
+                      rows="3"
+                      outlined
+                      dark
+                      prepend-inner-icon="mdi-map-marker-outline"
+                    ></v-textarea>
+                  </v-col>
+                </v-row>
 
-          <v-btn color="primary" type="submit" :loading="submitting" block>
-            บันทึกการเปลี่ยนแปลง
-          </v-btn>
-        </v-form>
-      </v-card-text>
-    </v-card>
-  </v-container>
+                <v-alert v-if="message" :type="messageType" text class="mt-4">
+                  {{ message }}
+                </v-alert>
+
+                <v-btn
+                  color="white"
+                  light
+                  type="submit"
+                  :loading="submitting"
+                  x-large
+                  block
+                  class="mt-6 black--text font-weight-bold"
+                >
+                  Save Changes
+                </v-btn>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
+  </div>
 </template>
 
 <script>
 export default {
+  middleware: 'auth', // ป้องกันไม่ให้เข้าหน้านี้หากยังไม่ล็อกอิน
+  head() {
+    return {
+      title: 'My Profile'
+    }
+  },
   data() {
     return {
       user: {
@@ -80,21 +121,21 @@ export default {
         if (response.data.status === 'success') {
           this.user = response.data.user;
         } else {
-          // ถ้ายังไม่ได้ login ให้ redirect ไปหน้า register/login
-          this.$router.push('/register');
+          // หาก session หมดอายุ หรือมีปัญหา ให้ redirect ไปหน้า login
+          this.$router.push('/Login');
         }
       } catch (error) {
         this.message = 'ไม่สามารถโหลดข้อมูลผู้ใช้ได้';
         this.messageType = 'error';
-        // อาจจะ redirect ถ้าไม่ได้รับอนุญาต (401 Unauthorized)
         if (error.response && error.response.status === 401) {
-            this.$router.push('/register');
+            this.$router.push('/Login');
         }
       } finally {
         this.loading = false;
       }
     },
     async updateProfile() {
+      if (!this.$refs.form.validate()) return;
       this.submitting = true;
       this.message = '';
       try {
@@ -117,7 +158,39 @@ export default {
 </script>
 
 <style scoped>
-.v-card {
-  border-radius: 12px;
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Jost:wght@300;400&display=swap');
+
+.profile-bg {
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  padding-top: 60px;
+}
+
+.card-glassmorphism {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px !important;
+}
+
+.card-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: white !important;
+  padding: 24px 24px 0;
+}
+
+.card-subtitle {
+  font-family: 'Jost', sans-serif;
+  color: #a0a0a0 !important;
+  padding: 0 24px 16px;
+}
+
+/* ทำให้ช่องกรอกข้อมูลดูโดดเด่นขึ้น */
+:deep(.v-text-field--outlined .v-field__slot),
+:deep(.v-text-field--outlined .v-input__control) {
+  background: rgba(0, 0, 0, 0.2) !important;
 }
 </style>

@@ -24,7 +24,7 @@ export default {
       overviewItems: [
         { icon: 'mdi-account-group-outline', title: 'User Management', subtitle: 'Oversee all user accounts', to: '/admin/users' },
         { icon: 'mdi-package-variant-closed', title: 'Product Management', subtitle: 'Curate your product collection', to: '/admin/products' },
-        { icon: 'mdi-plus-circle-outline', title: 'Add a New Product', subtitle: 'Introduce a new masterpiece', to: '/admin/add-product' },
+        { icon: 'mdi-receipt-text-outline', title: 'Order Management', subtitle: 'Oversee all customer orders', to: '/admin/orders' },
       ]
     }
   }
