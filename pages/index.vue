@@ -3,7 +3,7 @@
     <div class="welcome-title-inside">
       ELVURE SHOP
       <div class="welcome-subtitle-inside">
-        ตัวอย่างสินค้าที่ออกแบบโดยทีมงานของเจมส์
+        เจมส์เป็นผู้สนับสนุนหลักของเรา
       </div>
     </div>
     <v-img
