@@ -72,7 +72,6 @@ export default {
         }
       } catch (error) {
         console.error('Could not fetch orders', error);
-        alert('เกิดข้อผิดพลาดในการโหลดข้อมูลคำสั่งซื้อ');
       } finally {
         this.loading = false;
       }
@@ -89,7 +88,7 @@ export default {
     translateStatus(status) {
       const translations = {
         pending: 'รอดำเนินการ',
-        processing: 'กำลังเตรียมจัดส่ง',
+        processing: 'กำลังจัดส่งสินค้า', // <--- แก้ไขข้อความนี้
         shipped: 'จัดส่งแล้ว',
         completed: 'จัดส่งสำเร็จ',
         cancelled: 'ยกเลิกแล้ว'
@@ -107,7 +106,7 @@ export default {
   background: #0A0A0A;
 }
 .page-title {
-  color: #D4AF37; /* Gold color */
+  color: #D4AF37;
   font-family: 'Playfair Display', serif;
   font-weight: 700;
 }

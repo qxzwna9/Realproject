@@ -33,17 +33,20 @@
         </template>
         <template v-slot:item.status="{ item }">
           <v-chip :color="getStatusColor(item.status)" dark small>
-            {{ item.status }}
+            {{ translateStatus(item.status) }}
           </v-chip>
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn v-if="item.status === 'pending'" icon small class="mr-2" @click="approveOrder(item)" title="อนุมัติออเดอร์">
+           <v-btn v-if="item.status === 'pending'" icon small class="mr-2" @click="updateStatus(item, 'processing')" title="อนุมัติออเดอร์">
               <v-icon small color="success">mdi-check-circle-outline</v-icon>
           </v-btn>
-          <v-btn v-if="item.status === 'pending'" icon small class="mr-2" @click="cancelOrder(item)" title="ปฏิเสธออเดอร์">
-              <v-icon small color="error">mdi-close-circle-outline</v-icon>
+           <v-btn v-if="item.status === 'processing'" icon small class="mr-2" @click="updateStatus(item, 'shipped')" title="จัดส่งแล้ว">
+              <v-icon small color="info">mdi-truck-delivery-outline</v-icon>
           </v-btn>
-          <v-btn icon small class="mr-2" @click="editItem(item)" title="แก้ไขออเดอร์"><v-icon small>mdi-pencil-outline</v-icon></v-btn>
+          <v-btn v-if="item.status === 'shipped'" icon small class="mr-2" @click="updateStatus(item, 'completed')" title="จัดส่งสำเร็จ">
+               <v-icon small color="success">mdi-package-check</v-icon>
+          </v-btn>
+          <v-btn icon small class="mr-2" @click="editItem(item)" title="แก้ไขสถานะ"><v-icon small>mdi-pencil-outline</v-icon></v-btn>
           <v-btn icon small @click="deleteItem(item)" title="ลบออเดอร์"><v-icon small>mdi-delete-outline</v-icon></v-btn>
         </template>
       </v-data-table>
@@ -89,20 +92,16 @@
 export default {
   layout: 'admin',
   middleware: 'admin-auth',
-
-  // --- 1. เปลี่ยนมาใช้ asyncData ในการดึงข้อมูล ---
   async asyncData({ $axios, error }) {
     try {
       const { data } = await $axios.get('/get_orders.php');
       if (data.status === 'success') {
         return { orders: data.orders, loading: false };
       } else {
-        // ถ้า API ส่ง status 'error' กลับมา
         error({ statusCode: 500, message: data.message || 'API Error' });
         return { orders: [], loading: false };
       }
     } catch (e) {
-      // ถ้าเกิดข้อผิดพลาดในการเชื่อมต่อ
       error({ statusCode: 503, message: 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้' });
       return { orders: [], loading: false };
     }
@@ -111,7 +110,7 @@ export default {
   data () {
     return {
       search: '',
-      loading: true, // ตั้งค่าเริ่มต้นเป็น true
+      loading: true,
       saving: false,
       dialog: false,
       headers: [
@@ -122,7 +121,6 @@ export default {
         { text: 'วันที่', value: 'created_at' },
         { text: 'เครื่องมือ', value: 'actions', sortable: false, align: 'end' },
       ],
-      // orders จะถูกเติมค่าจาก asyncData
       statuses: ['pending', 'processing', 'shipped', 'completed', 'cancelled'],
       editedIndex: -1,
       editedItem: {
@@ -136,7 +134,6 @@ export default {
     }
   },
 
-  // --- 2. ลบ mounted() ออก และย้าย methods ที่เหลือมาไว้ตรงนี้ ---
   methods: {
     getStatusColor(status) {
         switch(status) {
@@ -146,6 +143,16 @@ export default {
             case 'cancelled': return 'error';
             default: return 'grey';
         }
+    },
+    translateStatus(status) {
+      const translations = {
+        pending: 'รอดำเนินการ',
+        processing: 'กำลังจัดส่งสินค้า', // <--- แก้ไขข้อความนี้
+        shipped: 'จัดส่งแล้ว',
+        completed: 'จัดส่งสำเร็จ',
+        cancelled: 'ยกเลิกแล้ว'
+      };
+      return translations[status] || status;
     },
     editItem (item) {
       this.editedIndex = this.orders.indexOf(item)
@@ -161,31 +168,16 @@ export default {
     },
     async save() {
       this.saving = true;
-      try {
-        const response = await this.$axios.post('/update_order_status.php', {
-            order_id: this.editedItem.order_id,
-            status: this.editedItem.status
-        });
-        if (response.data.status === 'success') {
-          Object.assign(this.orders[this.editedIndex], this.editedItem)
-          alert('อัปเดตสถานะออเดอร์เรียบร้อยแล้ว!');
-          this.close();
-        } else {
-          throw new Error(response.data.message);
-        }
-      } catch (error) {
-        console.error("Could not update order status", error);
-        alert("เกิดข้อผิดพลาด: " + (error.response ? error.response.data.message : "An unknown error occurred."));
-      } finally {
-        this.saving = false;
-      }
+      const itemToUpdate = { ...this.editedItem };
+      await this.updateOrderStatus(itemToUpdate);
+      this.close();
+      this.saving = false;
     },
     async deleteItem (item) {
       if(confirm(`คุณแน่ใจหรือไม่ว่าต้องการลบออเดอร์ #${item.order_id}?`)) {
           try {
               const response = await this.$axios.post('/delete_order.php', { order_id: item.order_id });
               if(response.data.status === 'success') {
-                  // ลบ item ออกจาก array โดยตรง ไม่ต้องโหลดใหม่
                   const index = this.orders.indexOf(item);
                   this.orders.splice(index, 1);
               } else {
@@ -197,14 +189,10 @@ export default {
           }
       }
     },
-    approveOrder(item) {
-        const itemClone = { ...item, status: 'processing' };
-        this.updateOrderStatus(itemClone);
-    },
-    cancelOrder(item) {
-        if (confirm(`คุณแน่ใจหรือไม่ว่าต้องการปฏิเสธออเดอร์ #${item.order_id}?`)) {
-            const itemClone = { ...item, status: 'cancelled' };
-            this.updateOrderStatus(itemClone);
+    async updateStatus(item, newStatus) {
+        if (confirm(`คุณต้องการเปลี่ยนสถานะออเดอร์ #${item.order_id} เป็น "${this.translateStatus(newStatus)}" ใช่หรือไม่?`)) {
+            const itemClone = { ...item, status: newStatus };
+            await this.updateOrderStatus(itemClone);
         }
     },
     async updateOrderStatus(item) {
@@ -219,7 +207,6 @@ export default {
                 if (index !== -1) {
                     Object.assign(this.orders[index], item);
                 }
-                alert(`อัปเดตสถานะออเดอร์ #${item.order_id} เป็น ${item.status} เรียบร้อยแล้ว!`);
             } else {
                 throw new Error(response.data.message);
             }
