@@ -72,21 +72,22 @@ export default {
 .about-bg {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  background: #0A0A0A;
   padding-top: 60px; /* Adjust for app bar */
 }
 
 .page-title {
-  color: #FFFFFF;
+  color: #D4AF37; /* Gold color */
+  font-family: 'Playfair Display', serif;
   font-weight: 700;
   font-size: 2.5rem;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
 }
 
 .card-glassmorphism {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(17, 17, 17, 0.8) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 16px;
 }
 
@@ -99,7 +100,7 @@ export default {
 .subtitle {
   font-size: 1.5rem;
   font-weight: 600;
-  color: #F97316; /* Accent color */
+  color: #D4AF37; /* Gold color */
 }
 
 .v-list-item__title {

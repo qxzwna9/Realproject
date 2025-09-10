@@ -3,10 +3,10 @@
     <v-app-bar
       app
       :clipped-left="clipped"
-      color="rgba(17, 24, 39, 0.8)"
+      color="rgba(17, 17, 17, 0.8)"
       flat
       dark
-      height="80px"  
+      height="80px"
       class="navbar-style"
     >
       <v-toolbar-title class="brand-title" v-text="title" />
@@ -51,7 +51,7 @@
         <v-btn text to="/shirt" class="nav-btn-large">สินค้า</v-btn>
         <v-btn text to="/contact" class="nav-btn-large">ติดต่อเรา</v-btn>
         <v-btn text to="/about" class="nav-btn-large">เกี่ยวกับเรา</v-btn>
-        <v-btn outlined to="/Login" class="login-btn-large">เข้าสู่ระบบ</v-btn>
+        <v-btn outlined color="primary" to="/Login" class="login-btn-large">เข้าสู่ระบบ</v-btn>
       </div>
     </v-app-bar>
 
@@ -87,14 +87,22 @@ export default {
 
 <style scoped>
 .brand-title {
-  font-size: 1.8rem; /* เพิ่มขนาดฟอนต์ของชื่อแบรนด์ */
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #D4AF37; /* Gold color */
 }
 .nav-btn-large {
-  font-size: 1rem !important; /* เพิ่มขนาดฟอนต์ของปุ่มเมนู */
+  font-size: 1rem !important;
   text-transform: none;
+  color: white;
 }
 .login-btn-large {
   font-size: 1rem !important;
   text-transform: none;
+}
+.navbar-style {
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
 }
 </style>

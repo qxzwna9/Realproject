@@ -4,8 +4,8 @@
       <v-row justify="center" align="center">
         <v-col cols="12" md="8" lg="6">
           <v-card flat color="transparent" class="text-center pa-md-10">
-            <v-avatar color="rgba(255, 255, 255, 0.1)" size="120" class="mb-6">
-              <v-icon size="60" color="white">mdi-account-circle-outline</v-icon>
+            <v-avatar color="rgba(212, 175, 55, 0.1)" size="120" class="mb-6">
+              <v-icon size="60" color="primary">mdi-account-circle-outline</v-icon>
             </v-avatar>
 
             <h1 class="welcome-title white--text mb-3">
@@ -19,9 +19,9 @@
             <div class="mt-10">
               <v-btn
                 x-large
-                color="white"
-                light
-                class="black--text font-weight-bold mx-2"
+                color="primary"
+                dark
+                class="font-weight-bold mx-2"
                 to="/shirt"
               >
                 <v-icon left>mdi-shopping-outline</v-icon>
@@ -30,7 +30,7 @@
               <v-btn
                 x-large
                 outlined
-                color="white"
+                color="primary"
                 class="mx-2"
                 to="/profile"
               >
@@ -49,7 +49,7 @@
 import { mapState } from 'vuex';
 
 export default {
-  middleware: 'auth', // Ensure user is logged in
+  middleware: 'auth',
   head() {
     return {
       title: 'Welcome'
@@ -70,7 +70,7 @@ export default {
 .member-welcome-bg {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  background: #0A0A0A;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,6 +82,7 @@ export default {
   font-weight: 700;
   letter-spacing: 1px;
   text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  color: #D4AF37 !important; /* Gold color */
 }
 
 .welcome-subtitle {
@@ -98,6 +99,6 @@ export default {
 }
 
 .v-avatar {
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(212, 175, 55, 0.2);
 }
 </style>

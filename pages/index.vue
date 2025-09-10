@@ -2,7 +2,7 @@
   <div class="welcome-bg-new">
     <div class="welcome-title-inside">
       ELVURE SHOP
-      <div class="we  1lcome-subtitle-inside">
+      <div class="welcome-subtitle-inside">
         ตัวอย่างสินค้าที่ออกแบบโดยทีมงานของเจมส์
       </div>
     </div>
@@ -43,7 +43,7 @@ export default {}
 
 <style scoped>
 .welcome-bg-new {
-  background: linear-gradient(135deg, #111827 0%, #111827 100%);
+  background: #0A0A0A;
   min-height: 100vh;
   width: 100vw;
   position: fixed;
@@ -53,9 +53,10 @@ export default {}
   padding: 32px 0 0 0;
 }
 .welcome-title-inside {
+  font-family: 'Playfair Display', serif;
   font-size: 3rem;
   font-weight: bold;
-  color: #FFFFFF;
+  color: #D4AF37; /* Gold color */
   margin-bottom: 130px;
   margin-top: 40px;
   text-align: center;
@@ -71,9 +72,9 @@ export default {}
 .product-img-large {
   max-width: 80%;
   object-fit: contain;
-  border: 3px solid #F97316;
-  background: #ffffff;
-  box-shadow: 0 4px 14px 0 rgba(31, 38, 135, 0.10);
+  border: 3px solid #D4AF37; /* Gold color */
+  background: #111111;
+  box-shadow: 0 4px 14px 0 rgba(212, 175, 55, 0.1);
   margin-left: auto;
   margin-right: auto;
 }

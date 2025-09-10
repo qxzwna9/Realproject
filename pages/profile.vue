@@ -5,7 +5,7 @@
         <v-col cols="12" md="8" lg="7">
           <v-card class="card-glassmorphism">
             <v-card-title class="card-title">
-              <v-icon left large color="white">mdi-account-edit-outline</v-icon>
+              <v-icon left large color="primary">mdi-account-edit-outline</v-icon>
               Manage Your Profile
             </v-card-title>
             <v-card-subtitle class="card-subtitle">
@@ -15,7 +15,7 @@
             <v-divider class="mx-6"></v-divider>
 
             <div v-if="loading" class="text-center pa-12">
-              <v-progress-circular indeterminate color="white" size="64"></v-progress-circular>
+              <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
               <p class="mt-4 white--text">Loading your profile...</p>
             </div>
 
@@ -69,13 +69,13 @@
                 </v-alert>
 
                 <v-btn
-                  color="white"
-                  light
+                  color="primary"
+                  dark
                   type="submit"
                   :loading="submitting"
                   x-large
                   block
-                  class="mt-6 black--text font-weight-bold"
+                  class="mt-6 font-weight-bold"
                 >
                   Save Changes
                 </v-btn>
@@ -90,7 +90,7 @@
 
 <script>
 export default {
-  middleware: 'auth', // ป้องกันไม่ให้เข้าหน้านี้หากยังไม่ล็อกอิน
+  middleware: 'auth',
   head() {
     return {
       title: 'My Profile'
@@ -107,7 +107,7 @@ export default {
       loading: true,
       submitting: false,
       message: '',
-      messageType: 'success' // or 'error'
+      messageType: 'success'
     }
   },
   async mounted() {
@@ -121,7 +121,6 @@ export default {
         if (response.data.status === 'success') {
           this.user = response.data.user;
         } else {
-          // หาก session หมดอายุ หรือมีปัญหา ให้ redirect ไปหน้า login
           this.$router.push('/Login');
         }
       } catch (error) {
@@ -163,14 +162,14 @@ export default {
 .profile-bg {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  background: #0A0A0A;
   padding-top: 60px;
 }
 
 .card-glassmorphism {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(17, 17, 17, 0.8) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 16px !important;
 }
 
@@ -178,7 +177,7 @@ export default {
   font-family: 'Playfair Display', serif;
   font-size: 2.2rem;
   font-weight: 700;
-  color: white !important;
+  color: #D4AF37 !important; /* Gold color */
   padding: 24px 24px 0;
 }
 
@@ -188,7 +187,6 @@ export default {
   padding: 0 24px 16px;
 }
 
-/* ทำให้ช่องกรอกข้อมูลดูโดดเด่นขึ้น */
 :deep(.v-text-field--outlined .v-field__slot),
 :deep(.v-text-field--outlined .v-input__control) {
   background: rgba(0, 0, 0, 0.2) !important;

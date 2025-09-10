@@ -28,8 +28,7 @@ export default {
     '@nuxtjs/pwa'
   ],
   axios: {
-    // --- แก้ไขบรรทัดนี้ ---
-    baseURL: 'http://localhost:8080/ProjectReal/db/', // <-- เปลี่ยนจาก projectreal เป็น ProjectReal
+    baseURL: 'http://localhost:8080/ProjectReal/db/',
     credentials: true
   },
   vuetify: {
@@ -38,7 +37,7 @@ export default {
       dark: true,
       themes: {
         dark: {
-          primary: colors.blue.darken2,
+          primary: '#D4AF37', // Gold color
           accent: colors.grey.darken3,
           secondary: colors.amber.darken3,
           info: colors.teal.lighten1,

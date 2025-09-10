@@ -66,13 +66,13 @@
               
               <v-card-actions class="pa-0 mt-6">
                 <v-btn 
-                  color="white" 
-                  light
+                  color="primary" 
+                  dark
                   block 
                   x-large 
                   type="submit" 
                   :loading="loading"
-                  class="register-button black--text"
+                  class="register-button"
                 >
                   Create Account
                 </v-btn>
@@ -134,22 +134,21 @@ export default {
 </script>
 
 <style scoped>
-/* Import Fonts for luxury feel */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Jost:wght@300;400&display=swap');
 
 .register-container {
   height: 100vh;
   width: 100vw;
-  background: #111827; /* <-- เปลี่ยนสีตรงนี้ */
+  background: #0A0A0A;
   font-family: 'Jost', sans-serif;
-  overflow: hidden; /* Prevent scrollbars */
+  overflow: hidden;
 }
 
 .branding-section {
   background-image: 
-    url('https://images.unsplash.com/photo-1627876116342-a50d1887019d?auto=format&fit=crop&w=700&q=80'), /* Hoodies */
-    url('https://images.unsplash.com/photo-1579758782065-276634d58dfc?auto=format&fit=crop&w=700&q=80'), /* T-Shirt folded */
-    url('https://images.unsplash.com/photo-1616641885871-007a514d02b8?auto=format&fit=crop&w=700&q=80'); /* Polo shirt texture */
+    url('https://images.unsplash.com/photo-1627876116342-a50d1887019d?auto=format&fit=crop&w=700&q=80'),
+    url('https://images.unsplash.com/photo-1579758782065-276634d58dfc?auto=format&fit=crop&w=700&q=80'),
+    url('https://images.unsplash.com/photo-1616641885871-007a514d02b8?auto=format&fit=crop&w=700&q=80');
   background-position: 
     left top, 
     center bottom, 
@@ -189,6 +188,7 @@ export default {
   font-weight: 700;
   letter-spacing: 2px;
   text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  color: #D4AF37; /* Gold color */
 }
 
 .brand-tagline {
@@ -221,11 +221,11 @@ export default {
 }
 
 :deep(.v-text-field--outlined fieldset) {
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 :deep(.v-text-field--outlined:hover fieldset) {
-  border-color: white;
+  border-color: #D4AF37; /* Gold color */
 }
 
 .register-button {
@@ -239,7 +239,7 @@ export default {
 }
 
 .login-link {
-  color: white;
+  color: #D4AF37; /* Gold color */
   text-decoration: none;
   font-weight: bold;
 }

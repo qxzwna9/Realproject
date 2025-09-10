@@ -95,7 +95,6 @@ export default {
         this.$store.dispatch('addToCart', shirt);
         alert(`เพิ่ม '${shirt.product_name}' ลงในตะกร้าแล้ว`);
       } else {
-        // หากยังไม่ login จะ redirect ไปหน้า Login
         this.$router.push('/Login');
       }
     },
@@ -107,11 +106,12 @@ export default {
 .shirt-page-bg {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #111827 0%, #111827 100%);
+  background: #0A0A0A;
 }
 
 .page-title {
-  color: #FFFFFF;
+  color: #D4AF37; /* Gold color */
+  font-family: 'Playfair Display', serif;
   font-weight: 700;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
 }
@@ -120,11 +120,14 @@ export default {
   transition: all 0.3s ease-in-out;
   border-radius: 12px !important;
   overflow: hidden;
+  background-color: #111111;
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 10px 20px rgba(212, 175, 55, 0.1) !important;
+  border: 1px solid rgba(212, 175, 55, 0.4);
 }
 
 .product-title {
@@ -135,6 +138,6 @@ export default {
 .price {
   font-size: 1.4rem;
   font-weight: bold;
-  color: var(--v-success-base, #4CAF50);
+  color: var(--v-primary-base, #D4AF37); /* Gold color */
 }
 </style>

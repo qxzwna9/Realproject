@@ -24,7 +24,7 @@
             <v-divider></v-divider>
             <v-card-text class="d-flex justify-space-between headline">
               <span>ยอดรวม:</span>
-              <span class="font-weight-bold success--text">{{ cartTotal.toFixed(2) }} ฿</span>
+              <span class="font-weight-bold primary--text">{{ cartTotal.toFixed(2) }} ฿</span>
             </v-card-text>
           </v-card>
         </v-col>
@@ -38,7 +38,7 @@
                 <v-text-field v-model="shipping.name" label="ชื่อ-นามสกุลผู้รับ" outlined dark required></v-text-field>
                 <v-textarea v-model="shipping.address" label="ที่อยู่สำหรับจัดส่ง" outlined dark required rows="3"></v-textarea>
                 <v-text-field v-model="shipping.phone" label="เบอร์โทรศัพท์" outlined dark required></v-text-field>
-                <v-btn type="submit" x-large color="success" :loading="loading" block>
+                <v-btn type="submit" x-large color="primary" :loading="loading" block>
                   <v-icon left>mdi-credit-card-check-outline</v-icon>
                   ยืนยันและชำระเงิน
                 </v-btn>
@@ -73,7 +73,6 @@ export default {
   computed: {
     ...mapState(['cart', 'user']),
     cartTotal() {
-      // แปลงเป็นตัวเลขก่อนคำนวณ
       return this.cart.reduce((total, item) => total + (Number(item.price) * item.quantity), 0);
     }
   },
@@ -127,16 +126,17 @@ export default {
 .checkout-bg {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  background: #0A0A0A;
 }
 .page-title {
-  color: #FFFFFF;
+  color: #D4AF37; /* Gold color */
+  font-family: 'Playfair Display', serif;
   font-weight: 700;
 }
 .card-glassmorphism {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(17, 17, 17, 0.8) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 16px !important;
 }
 </style>

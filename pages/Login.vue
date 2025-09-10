@@ -44,13 +44,13 @@
 
               <v-card-actions class="pa-0 mt-6">
                 <v-btn
-                  color="white"
-                  light
+                  color="primary"
+                  dark
                   block
                   x-large
                   type="submit"
                   :loading="loading"
-                  class="login-button black--text"
+                  class="login-button"
                 >
                   Sign In
                 </v-btn>
@@ -69,7 +69,7 @@
 
 <script>
 export default {
-  layout: 'guest', // ใช้ layout ที่ไม่มีแถบนำทางหลัก
+  layout: 'guest',
   data() {
     return {
       form: { email: '', password: '' },
@@ -83,16 +83,13 @@ export default {
       this.loading = true;
       this.message = '';
       try {
-        // เรียกใช้ login action จาก Vuex store
         const user = await this.$store.dispatch('login', this.form);
 
         this.message = 'Login successful! Redirecting...';
         this.messageType = 'success';
 
-        // ตรวจสอบ user_type และ redirect ไปยังหน้าที่ถูกต้อง
         const destination = user.user_type === 'admin' ? '/admin/dashboard' : '/MemberIndex';
 
-        // ใช้ setTimeout เพื่อให้ผู้ใช้เห็นข้อความ success ก่อน
         setTimeout(() => {
             this.$router.push(destination);
         }, 1000);
@@ -114,7 +111,7 @@ export default {
 .login-container {
   height: 100vh;
   width: 100vw;
-  background: #111827;
+  background: #0A0A0A;
   font-family: 'Jost', sans-serif;
   overflow: hidden;
 }
@@ -158,6 +155,7 @@ export default {
   font-weight: 700;
   letter-spacing: 2px;
   text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  color: #D4AF37; /* Gold color */
 }
 .brand-tagline {
   font-size: 1.25rem;
@@ -184,10 +182,10 @@ export default {
   color: rgba(255, 255, 255, 0.7) !important;
 }
 :deep(.v-text-field--outlined fieldset) {
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(212, 175, 55, 0.4);
 }
 :deep(.v-text-field--outlined:hover fieldset) {
-  border-color: white;
+  border-color: #D4AF37; /* Gold color */
 }
 .login-button {
   font-weight: bold;
@@ -198,7 +196,7 @@ export default {
   color: #a0a0a0;
 }
 .register-link {
-  color: white;
+  color: #D4AF37; /* Gold color */
   text-decoration: none;
   font-weight: bold;
 }

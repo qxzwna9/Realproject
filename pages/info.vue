@@ -9,7 +9,7 @@
       <v-card class="card-glassmorphism mx-auto" max-width="950">
         <v-card-text class="pa-0">
           <div v-if="loading" class="text-center pa-12">
-            <v-progress-circular indeterminate color="white" size="64"></v-progress-circular>
+            <v-progress-circular indeterminate color="primary" size="64"></v-progress-circular>
             <p class="mt-4 white--text">Loading product data...</p>
           </div>
 
@@ -59,7 +59,6 @@ export default {
   },
   async asyncData({ $axios, error }) {
     try {
-      // ใช้ $axios ที่มาจาก nuxt.config.js โดยตรง
       const response = await $axios.get('http://localhost:8080/ProjectReal/db/shirt_select.php');
       if (Array.isArray(response.data)) {
         return { products: response.data, loading: false, error: null };
@@ -88,14 +87,14 @@ export default {
 .info-bg {
   min-height: 100vh;
   width: 100%;
-  background: linear-gradient(135deg, #111827 0%, #1e293b 100%);
+  background: #0A0A0A;
   padding-top: 60px;
 }
 
 .page-title {
   font-family: 'Playfair Display', serif;
   font-size: 2.8rem;
-  color: #FFFFFF;
+  color: #D4AF37; /* Gold color */
   font-weight: 700;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
 }
@@ -106,9 +105,9 @@ export default {
 }
 
 .card-glassmorphism {
-  background: rgba(255, 255, 255, 0.1) !important;
+  background: rgba(17, 17, 17, 0.8) !important;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   border-radius: 16px !important;
   overflow: hidden;
 }
@@ -126,7 +125,7 @@ export default {
 .list-item-price {
   font-size: 1.1rem;
   font-weight: bold;
-  color: var(--v-success-base, #4CAF50);
+  color: #D4AF37; /* Gold color */
 }
 
 </style>
