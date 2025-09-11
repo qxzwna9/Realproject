@@ -24,6 +24,16 @@
                 {{ translateStatus(item.status) }}
               </v-chip>
             </template>
+            <template v-slot:item.actions="{ item }">
+              <v-btn
+                v-if="item.status === 'pending'"
+                color="error"
+                small
+                @click="cancelOrder(item)"
+              >
+                ยกเลิกออเดอร์
+              </v-btn>
+            </template>
              <template v-slot:no-data>
                 <div class="text-center py-8">
                     <p class="grey--text">คุณยังไม่มีคำสั่งซื้อ</p>
@@ -54,6 +64,7 @@ export default {
         { text: 'วันที่', value: 'created_at' },
         { text: 'ยอดรวม', value: 'total' },
         { text: 'สถานะ', value: 'status' },
+        { text: 'Actions', value: 'actions', sortable: false, align: 'end' }, // เพิ่ม Header สำหรับ Actions
       ],
     };
   },
@@ -88,12 +99,31 @@ export default {
     translateStatus(status) {
       const translations = {
         pending: 'รอดำเนินการ',
-        processing: 'กำลังจัดส่งสินค้า', // <--- แก้ไขข้อความนี้
+        processing: 'กำลังจัดส่งสินค้า',
         shipped: 'จัดส่งแล้ว',
         completed: 'จัดส่งสำเร็จ',
         cancelled: 'ยกเลิกแล้ว'
       };
       return translations[status] || status;
+    },
+    async cancelOrder(order) {
+      if (confirm(`คุณต้องการยกเลิกออเดอร์หมายเลข #${order.order_id} ใช่หรือไม่?`)) {
+        try {
+          const { data } = await this.$axios.post('/cancel_order.php', { order_id: order.order_id });
+          if (data.status === 'success') {
+            // อัปเดตสถานะในหน้าเว็บทันที
+            const index = this.orders.findIndex(o => o.order_id === order.order_id);
+            if (index !== -1) {
+              this.orders[index].status = 'cancelled';
+            }
+          } else {
+            throw new Error(data.message);
+          }
+        } catch (error) {
+          console.error('Could not cancel order', error);
+          alert('เกิดข้อผิดพลาดในการยกเลิกออเดอร์: ' + error.message);
+        }
+      }
     }
   },
 };

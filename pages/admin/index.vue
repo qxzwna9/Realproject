@@ -65,7 +65,7 @@
 
 <script>
 export default {
-  layout: 'guest', // ใช้ layout ที่ไม่มีแถบนำทาง
+  layout: 'guest',
   data() {
     return {
       form: { email: '', password: '' },
@@ -102,7 +102,6 @@ export default {
 </script>
 
 <style scoped>
-/* (ใช้ CSS เดียวกันกับหน้า Login.vue) */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Jost:wght@300;400&display=swap');
 
 .login-container {

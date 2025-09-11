@@ -92,7 +92,7 @@ export default {
         { text: 'Actions', value: 'actions', sortable: false, align: 'end' },
       ],
       users: [],
-      userTypes: ['customer', 'admin'], // ตัวเลือกสำหรับ User Role
+      userTypes: ['customer', 'admin'],
       editedIndex: -1,
       editedItem: {
         user_id: null,
@@ -143,7 +143,6 @@ export default {
       try {
         const response = await this.$axios.post('/user_update_admin.php', this.editedItem);
         if (response.data.status === 'success') {
-          // อัปเดตข้อมูลในตารางทันทีโดยไม่ต้องโหลดใหม่
           Object.assign(this.users[this.editedIndex], this.editedItem)
           alert('User updated successfully!');
           this.close();
@@ -162,7 +161,7 @@ export default {
           try {
               const response = await this.$axios.post('/delete_user.php', { user_id: item.user_id });
               if(response.data.status === 'success') {
-                  this.fetchUsers(); // โหลดข้อมูลใหม่หลังจากลบ
+                  this.fetchUsers();
               } else {
                   alert("Error: " + response.data.message);
               }
@@ -177,7 +176,6 @@ export default {
 </script>
 
 <style>
-/* (Style ทั้งหมดเหมือนเดิม) */
 .page-title {
   font-family: 'Playfair Display', serif;
   font-size: 2.5rem;

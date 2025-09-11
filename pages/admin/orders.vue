@@ -148,7 +148,6 @@ export default {
         { text: 'สถานะ', value: 'status' },
         { text: 'วันที่', value: 'created_at' },
         { text: 'เครื่องมือ', value: 'actions', sortable: false, align: 'end' },
-        // เพิ่มคอลัมน์สำหรับปุ่ม expand
         { text: '', value: 'data-table-expand' },
       ],
       statuses: ['pending', 'processing', 'shipped', 'completed', 'cancelled'],
@@ -252,5 +251,4 @@ export default {
 </script>
 
 <style>
-/* ... style ของคุณ (เหมือนเดิม) ... */
 </style>

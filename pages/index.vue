@@ -3,7 +3,7 @@
     <div class="welcome-title-inside">
       ELVURE SHOP
       <div class="welcome-subtitle-inside">
-        เจมส์เป็นผู้สนับสนุนหลักของเรา
+        ไม่เชื่อคับโม้
       </div>
     </div>
     <v-img

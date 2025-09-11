@@ -67,7 +67,7 @@ export default {
         { icon: 'mdi-view-dashboard-outline', title: 'Dashboard', to: '/admin/dashboard' },
         { icon: 'mdi-account-group-outline', title: 'User Management', to: '/admin/users' },
         { icon: 'mdi-package-variant-closed', title: 'Product Management', to: '/admin/products' },
-        { icon: 'mdi-receipt-text-outline', title: 'Order Management', to: '/admin/orders' }, // เพิ่มบรรทัดนี้
+        { icon: 'mdi-receipt-text-outline', title: 'Order Management', to: '/admin/orders' },
       ],
       title: 'ELVURE'
     }
@@ -82,13 +82,6 @@ export default {
 </script>
 
   <style>
-  /* แนะนำให้เพิ่ม Google Fonts ใน nuxt.config.js
-    head: {
-      link: [
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap' }
-      ]
-    }
-  */
   .admin-luxury-app {
     font-family: 'Lato', sans-serif;
     background-color: #0A0A0A;
