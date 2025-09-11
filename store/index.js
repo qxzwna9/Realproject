@@ -19,24 +19,33 @@ export const mutations = {
     state.cart = cart;
   },
   ADD_TO_CART(state, product) {
-    const item = state.cart.find(i => i.product_id === product.product_id);
+    // ตรวจสอบว่ามีสินค้าชิ้นเดียวกัน และไซซ์เดียวกันอยู่ในตะกร้าหรือไม่
+    const item = state.cart.find(i => i.product_id === product.product_id && i.size === product.size);
     if (item) {
-      item.quantity++;
+      // ถ้ามี ให้อัปเดตจำนวน
+      item.quantity += product.quantity;
     } else {
-      state.cart.push({ ...product, quantity: 1 });
+      // ถ้าไม่มี ให้เพิ่มสินค้าใหม่ลงตะกร้า พร้อมสร้าง ID เฉพาะสำหรับรายการในตะกร้า
+      state.cart.push({
+        ...product,
+        cart_item_id: `${product.product_id}_${product.size}` // ID เฉพาะสำหรับสินค้า + ไซซ์
+      });
     }
+    // บันทึกตะกร้าลง Local Storage
     if (process.client) {
       localStorage.setItem('cart', JSON.stringify(state.cart));
     }
   },
-  REMOVE_FROM_CART(state, productId) {
-    state.cart = state.cart.filter(i => i.product_id !== productId);
+  REMOVE_FROM_CART(state, cartItemId) {
+    // ลบสินค้าด้วย cart_item_id ที่ไม่ซ้ำกัน
+    state.cart = state.cart.filter(i => i.cart_item_id !== cartItemId);
     if (process.client) {
       localStorage.setItem('cart', JSON.stringify(state.cart));
     }
   },
-  UPDATE_ITEM_QUANTITY(state, { productId, quantity }) {
-    const item = state.cart.find(i => i.product_id === productId);
+  UPDATE_ITEM_QUANTITY(state, { cartItemId, quantity }) {
+    // อัปเดตจำนวนด้วย cart_item_id
+    const item = state.cart.find(i => i.cart_item_id === cartItemId);
     if (item) {
       item.quantity = quantity;
     }
@@ -55,10 +64,9 @@ export const mutations = {
 export const actions = {
   async register({ commit }, form) {
     try {
-      // ใช้ $axios ที่เราตั้งค่าไว้ใน nuxt.config.js
       const response = await this.$axios.post('/register.php', form);
       if (response.data.status === 'success') {
-        return response.data; // ส่ง response กลับไปให้ component
+        return response.data;
       } else {
         throw new Error(response.data.message || 'An unknown error occurred');
       }
@@ -101,7 +109,6 @@ export const actions = {
     } finally {
       commit('LOGOUT');
       commit('CLEAR_CART');
-      // Redirect to login page after logout
       if (this.$router.currentRoute.path !== '/Login') {
         this.$router.push('/Login');
       }
@@ -119,8 +126,8 @@ export const actions = {
   addToCart({ commit }, product) {
     commit('ADD_TO_CART', product);
   },
-  removeFromCart({ commit }, productId) {
-    commit('REMOVE_FROM_CART', productId);
+  removeFromCart({ commit }, cartItemId) {
+    commit('REMOVE_FROM_CART', cartItemId);
   },
   updateQuantity({ commit }, payload) {
     commit('UPDATE_ITEM_QUANTITY', payload);

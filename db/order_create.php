@@ -57,8 +57,7 @@ try {
         $total_price += $server_products[$item->product_id]['price'] * $item->quantity;
     }
 
-    // 4. บันทึกข้อมูลลงตาราง `orders` (ใช้ชื่อคอลัมน์ที่ถูกต้อง: total, status)
-    // **หมายเหตุ:** โค้ดนี้จะยังไม่บันทึกที่อยู่จัดส่ง เพราะตาราง orders ของคุณยังไม่มีคอลัมน์สำหรับเก็บข้อมูลนี้
+    // 4. บันทึกข้อมูลลงตาราง `orders`
     $sql_order = "INSERT INTO orders (user_id, total, status) VALUES (?, ?, 'pending')";
     $stmt_order = $conn->prepare($sql_order);
     $stmt_order->bind_param("id", $user_id, $total_price);
@@ -66,8 +65,8 @@ try {
     $order_id = $stmt_order->insert_id;
     $stmt_order->close();
     
-    // 5. บันทึกรายการสินค้าลง `order_items` และตัดสต็อก
-    $sql_item = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+    // 5. บันทึกรายการสินค้าลง `order_items` และตัดสต็อก (เพิ่มคอลัมน์ size)
+    $sql_item = "INSERT INTO order_items (order_id, product_id, size, quantity, price) VALUES (?, ?, ?, ?, ?)";
     $stmt_item = $conn->prepare($sql_item);
 
     $sql_stock = "UPDATE products SET stock = stock - ? WHERE product_id = ?";
@@ -75,7 +74,8 @@ try {
 
     foreach ($cart as $item) {
         $product_price = $server_products[$item->product_id]['price'];
-        $stmt_item->bind_param("iiid", $order_id, $item->product_id, $item->quantity, $product_price);
+        // เพิ่มตัวแปร s (string) สำหรับ size และส่งค่า $item->size เข้าไป
+        $stmt_item->bind_param("iisid", $order_id, $item->product_id, $item->size, $item->quantity, $product_price);
         $stmt_item->execute();
         
         $stmt_stock->bind_param("ii", $item->quantity, $item->product_id);

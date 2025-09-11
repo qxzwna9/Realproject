@@ -14,13 +14,14 @@
           <div v-else>
             <v-list color="transparent" dark>
               <template v-for="(item, index) in cartItems">
-                <v-list-item :key="item.product_id">
+                <v-list-item :key="item.cart_item_id">
                   <v-list-item-avatar tile size="80" class="mr-4">
                     <v-img :src="'http://localhost:8080/ProjectReal/images/' + item.image"></v-img>
                   </v-list-item-avatar>
 
                   <v-list-item-content>
                     <v-list-item-title class="font-weight-bold white--text">{{ item.product_name }}</v-list-item-title>
+                    <v-list-item-subtitle class="white--text">ไซซ์: {{ item.size }}</v-list-item-subtitle>
                     <v-list-item-subtitle class="white--text">{{ Number(item.price).toFixed(2) }} ฿</v-list-item-subtitle>
                   </v-list-item-content>
 
@@ -29,19 +30,19 @@
                       v-model.number="item.quantity"
                       type="number"
                       min="1"
-                      @change="updateQty(item.product_id, $event)"
+                      @change="updateQty(item.cart_item_id, $event.target.value)"
                       style="width: 70px;"
                       dense
                       outlined
                       hide-details
                     ></v-text-field>
                     <span class="subtotal mx-4">= {{ (Number(item.price) * item.quantity).toFixed(2) }} ฿</span>
-                    <v-btn icon color="red lighten-1" @click="removeItem(item.product_id)">
+                    <v-btn icon color="red lighten-1" @click="removeItem(item.cart_item_id)">
                       <v-icon>mdi-delete</v-icon>
                     </v-btn>
                   </v-list-item-action>
                 </v-list-item>
-                <v-divider v-if="index < cartItems.length - 1" :key="'divider-' + item.product_id"></v-divider>
+                <v-divider v-if="index < cartItems.length - 1" :key="'divider-' + item.cart_item_id"></v-divider>
               </template>
             </v-list>
 
@@ -77,6 +78,7 @@ export default {
   computed: {
     ...mapState(['cart']),
     cartItems() {
+      // Use JSON.parse and stringify to create a deep copy for local manipulation
       return JSON.parse(JSON.stringify(this.cart));
     },
     cartTotal() {
@@ -84,18 +86,19 @@ export default {
     }
   },
   methods: {
-    removeItem(productId) {
+    removeItem(cartItemId) {
       if (confirm('คุณต้องการลบสินค้านี้ออกจากตะกร้าใช่หรือไม่?')) {
-        this.$store.dispatch('removeFromCart', productId);
+        this.$store.dispatch('removeFromCart', cartItemId);
       }
     },
-    updateQty(productId, newQuantity) {
+    updateQty(cartItemId, newQuantity) {
       const quantity = parseInt(newQuantity, 10);
       if (quantity > 0) {
-        this.$store.dispatch('updateQuantity', { productId, quantity });
+        this.$store.dispatch('updateQuantity', { cartItemId, quantity });
       } else {
-        const originalItem = this.cart.find(i => i.product_id === productId);
-        const itemInComponent = this.cartItems.find(i => i.product_id === productId);
+        // Revert to original quantity if input is invalid
+        const originalItem = this.cart.find(i => i.cart_item_id === cartItemId);
+        const itemInComponent = this.cartItems.find(i => i.cart_item_id === cartItemId);
         if (itemInComponent && originalItem) {
             itemInComponent.quantity = originalItem.quantity;
         }

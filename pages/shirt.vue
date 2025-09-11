@@ -39,10 +39,10 @@
               <div>{{ shirt.description || 'ไม่มีคำอธิบาย' }}</div>
               <div class="price mt-3">{{ parseFloat(shirt.price).toFixed(2) }} ฿</div>
             </v-card-text>
-            
+
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" @click="buyProduct(shirt)">
+              <v-btn color="primary" @click="openPurchaseDialog(shirt)">
                 <v-icon left>mdi-cart-plus</v-icon>
                 ซื้อสินค้า
               </v-btn>
@@ -50,6 +50,36 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <v-dialog v-model="dialog" max-width="500px">
+        <v-card>
+          <v-card-title class="headline">{{ selectedProduct.product_name }}</v-card-title>
+          <v-card-text>
+            <v-select
+              v-model="selectedSize"
+              :items="sizes"
+              label="เลือกไซซ์"
+              required
+              outlined
+              dense
+            ></v-select>
+            <v-text-field
+              v-model.number="quantity"
+              label="จำนวน"
+              type="number"
+              min="1"
+              required
+              outlined
+              dense
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="dialog = false">ยกเลิก</v-btn>
+            <v-btn color="primary" @click="buyProduct">เพิ่มลงตะกร้า</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
     </v-container>
   </div>
@@ -62,6 +92,12 @@ export default {
       shirts: [],
       loading: true,
       error: null,
+      dialog: false,
+      selectedProduct: {},
+      selectedSize: 'M',
+      quantity: 1,
+      // อัปเดตรายการไซซ์ตรงนี้
+      sizes: ['S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL', '5XL'],
     };
   },
   async mounted() {
@@ -90,13 +126,25 @@ export default {
         this.loading = false;
       }
     },
-    buyProduct(shirt) {
+    openPurchaseDialog(shirt) {
       if (this.$store.state.isAuthenticated) {
-        this.$store.dispatch('addToCart', shirt);
-        alert(`เพิ่ม '${shirt.product_name}' ลงในตะกร้าแล้ว`);
+        this.selectedProduct = shirt;
+        this.selectedSize = 'M'; // Reset to default size
+        this.quantity = 1; // Reset to default quantity
+        this.dialog = true;
       } else {
         this.$router.push('/Login');
       }
+    },
+    buyProduct() {
+      const productToAdd = {
+        ...this.selectedProduct,
+        size: this.selectedSize,
+        quantity: this.quantity,
+      };
+      this.$store.dispatch('addToCart', productToAdd);
+      alert(`เพิ่ม '${productToAdd.product_name}' (ไซซ์ ${productToAdd.size}) จำนวน ${productToAdd.quantity} ชิ้น ลงในตะกร้าแล้ว`);
+      this.dialog = false;
     },
   },
 };

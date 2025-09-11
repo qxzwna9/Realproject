@@ -24,6 +24,8 @@
         :loading="loading"
         loading-text="กำลังโหลดข้อมูลออเดอร์..."
         class="luxury-table"
+        show-expand
+        item-key="order_id"
       >
         <template v-slot:item.created_at="{ item }">
           {{ new Date(item.created_at).toLocaleString() }}
@@ -48,6 +50,32 @@
           </v-btn>
           <v-btn icon small class="mr-2" @click="editItem(item)" title="แก้ไขสถานะ"><v-icon small>mdi-pencil-outline</v-icon></v-btn>
           <v-btn icon small @click="deleteItem(item)" title="ลบออเดอร์"><v-icon small>mdi-delete-outline</v-icon></v-btn>
+        </template>
+
+        <template v-slot:expanded-item="{ headers, item }">
+          <td :colspan="headers.length" class="pa-4">
+            <h4 class="mb-2">รายการสินค้าในออเดอร์ #{{ item.order_id }}</h4>
+            <v-simple-table dense>
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">สินค้า</th>
+                    <th class="text-left">ไซซ์</th>
+                    <th class="text-right">จำนวน</th>
+                    <th class="text-right">ราคาต่อหน่วย</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(product, index) in item.items" :key="index">
+                    <td>{{ product.product_name }}</td>
+                    <td>{{ product.size }}</td>
+                    <td class="text-right">{{ product.quantity }}</td>
+                    <td class="text-right">{{ parseFloat(product.price).toFixed(2) }} ฿</td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+          </td>
         </template>
       </v-data-table>
     </v-card>
@@ -120,6 +148,8 @@ export default {
         { text: 'สถานะ', value: 'status' },
         { text: 'วันที่', value: 'created_at' },
         { text: 'เครื่องมือ', value: 'actions', sortable: false, align: 'end' },
+        // เพิ่มคอลัมน์สำหรับปุ่ม expand
+        { text: '', value: 'data-table-expand' },
       ],
       statuses: ['pending', 'processing', 'shipped', 'completed', 'cancelled'],
       editedIndex: -1,
@@ -147,7 +177,7 @@ export default {
     translateStatus(status) {
       const translations = {
         pending: 'รอดำเนินการ',
-        processing: 'กำลังจัดส่งสินค้า', // <--- แก้ไขข้อความนี้
+        processing: 'กำลังจัดส่งสินค้า',
         shipped: 'จัดส่งแล้ว',
         completed: 'จัดส่งสำเร็จ',
         cancelled: 'ยกเลิกแล้ว'
