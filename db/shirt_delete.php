@@ -28,13 +28,31 @@ $product_id = $data->product_id;
 $conn->begin_transaction();
 
 try {
-    // 3. (สำคัญ) ลบข้อมูลสินค้าชิ้นนี้ออกจากตาราง `order_items` ก่อน
+    // 3. (สำคัญ) ลบข้อมูลที่เกี่ยวข้องทั้งหมดก่อน
     // เพื่อปลดล็อคข้อจำกัดของฐานข้อมูล (Foreign Key Constraint)
+
+    // ลบจากตาราง order_items
     $sql_order_items = "DELETE FROM order_items WHERE product_id = ?";
     $stmt_order_items = $conn->prepare($sql_order_items);
     $stmt_order_items->bind_param("i", $product_id);
     $stmt_order_items->execute();
     $stmt_order_items->close();
+
+    // ---- เพิ่มส่วนนี้ ----
+    // ลบจากตาราง product_sizes
+    $sql_sizes = "DELETE FROM product_sizes WHERE product_id = ?";
+    $stmt_sizes = $conn->prepare($sql_sizes);
+    $stmt_sizes->bind_param("i", $product_id);
+    $stmt_sizes->execute();
+    $stmt_sizes->close();
+
+    // ---- เพิ่มส่วนนี้ ----
+    // ลบจากตาราง reviews
+    $sql_reviews = "DELETE FROM reviews WHERE product_id = ?";
+    $stmt_reviews = $conn->prepare($sql_reviews);
+    $stmt_reviews->bind_param("i", $product_id);
+    $stmt_reviews->execute();
+    $stmt_reviews->close();
 
     // 4. ลบสินค้าออกจากตาราง `products`
     $sql_products = "DELETE FROM products WHERE product_id = ?";

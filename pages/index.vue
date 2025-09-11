@@ -3,7 +3,7 @@
     <div class="welcome-title-inside">
       ELVURE SHOP
       <div class="welcome-subtitle-inside">
-        ไม่เชื่อคับโม้
+        ยินดีต้อนรับเข้าสู่ ELVURE SHOP 
       </div>
     </div>
     <v-img
@@ -11,7 +11,7 @@
     <v-row class="justify-center mb-8 mt-n12">
       <v-col cols="12" sm="4">
         <v-img
-          src="s2.png"
+          src="E1.png"
           height="500"
           class="rounded-lg mb-2 product-img-large"
           contain
@@ -19,7 +19,7 @@
       </v-col>
       <v-col cols="12" sm="4">
         <v-img
-          src="s1.png"
+          src="E2.png"
           height="500"
           class="rounded-lg mb-2 product-img-large"
           contain
@@ -27,7 +27,7 @@
       </v-col>
       <v-col cols="12" sm="4">
         <v-img
-          src="s3.png"
+          src="E3.png"
           height="500"
           class="rounded-lg mb-2 product-img-large"
           contain
